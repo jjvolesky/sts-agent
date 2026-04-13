@@ -48,6 +48,7 @@ def game_loop(game_process):
             print(f"{type=}")
 
             # TODO may need to handle "type" == "error"
+            # may need to choose between either proceed or leave room
 
             if not "decision" in state:
                 continue
