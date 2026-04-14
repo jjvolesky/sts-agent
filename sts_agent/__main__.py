@@ -39,6 +39,8 @@ def start_game():
 
 
 def game_loop(game_process):
+    last_type = None
+
     try:
         while game_process.poll() is None:
             line = game_process.stdout.readline()
@@ -47,8 +49,15 @@ def game_loop(game_process):
             type = state["type"]
             print(f"{type=}")
 
-            # TODO may need to handle "type" == "error"
-            # may need to choose between either proceed or leave room
+            if type == "error":
+                if last_type == "combat_play":
+                    action = {"cmd": "action", "action": "proceed"}
+                else:
+                    action = {"cmd": "action", "action": "leave_room"}
+
+                game_process.stdin.write(json.dumps(action) + "\n")
+                game_process.stdin.flush()
+                continue
 
             if not "decision" in state:
                 continue
@@ -94,6 +103,7 @@ def game_loop(game_process):
             game_process.stdin.write(json.dumps(action) + "\n")
             game_process.stdin.flush()
 
+            last_type = type
             sleep(0.5)
     finally:
         game_process.kill()
