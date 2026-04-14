@@ -57,9 +57,12 @@ def game_loop(game_process):
 
                 game_process.stdin.write(json.dumps(action) + "\n")
                 game_process.stdin.flush()
+
+                sleep(0.5)
                 continue
 
             if not "decision" in state:
+                sleep(0.5)
                 continue
 
             decision = state["decision"]
