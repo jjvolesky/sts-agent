@@ -9,7 +9,7 @@ CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 START_CMD = {
     "cmd": "start_run",
     "character": "Ironclad",
-    "seed": "CS 540 Rocks",
+    "seed": "cs540_test_seed",
     "ascension": 0,
 }
 
@@ -39,7 +39,7 @@ def start_game():
 
 
 def game_loop(game_process):
-    last_type = None
+    last_action = None
 
     try:
         while game_process.poll() is None:
@@ -50,19 +50,24 @@ def game_loop(game_process):
             print(f"{type=}")
 
             if type == "error":
-                if last_type == "combat_play":
+                print(f"{last_action=}")
+
+                if last_action == "end_turn":
                     action = {"cmd": "action", "action": "proceed"}
                 else:
                     action = {"cmd": "action", "action": "leave_room"}
 
+                print(f"{action=}")
+                last_action = action["action"]
+
                 game_process.stdin.write(json.dumps(action) + "\n")
                 game_process.stdin.flush()
 
-                sleep(0.5)
+                sleep(1)
                 continue
 
             if not "decision" in state:
-                sleep(0.5)
+                sleep(1)
                 continue
 
             decision = state["decision"]
@@ -106,8 +111,8 @@ def game_loop(game_process):
             game_process.stdin.write(json.dumps(action) + "\n")
             game_process.stdin.flush()
 
-            last_type = type
-            sleep(0.5)
+            last_action = action["action"]
+            sleep(1)
     finally:
         game_process.kill()
 
