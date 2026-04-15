@@ -1,4 +1,4 @@
 #!/bin/bash
 
 source ./venv/bin/activate
-python -m sts_agent
+python3 -m sts_agent
