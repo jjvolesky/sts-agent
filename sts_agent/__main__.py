@@ -91,13 +91,15 @@ def game_loop(game_process):
                 case "game_over":
                     victory = state.get("victory", False)
                     player = state.get("player", {})
+                    context = state.get("context", {})
                     print(
-                        f"\n{'VICTORY' if victory else 'DEFEAT'} at act {state.get('act')}, "
-                        f"floor {state.get('floor')} "
+                        f"\n{'VICTORY' if victory else 'DEFEAT'} at act {context.get('act')}, "
+                        f"floor {context.get('floor')} "
                         f"(HP: {player.get('hp')}/{player.get('max_hp')}, "
                         f"Gold: {player.get('gold')}, "
                         f"Deck: {player.get('deck_size')} cards)"
                     )
+                    break
                 case "map_select":
                     action = map_select(state)
                 case "rest_site":
