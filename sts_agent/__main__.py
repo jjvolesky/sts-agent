@@ -3,7 +3,7 @@ import os
 import random
 import subprocess
 from time import sleep
-from sts_agent.input_cleaner import strip_ansi_colour
+from sts_agent.input_cleaner import clean_input
 
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 
@@ -44,12 +44,8 @@ def game_loop(game_process):
 
     try:
         while game_process.poll() is None:
-            # line = ansi_escape.sub('',game_process.stdout.readline().strip())
-            line = game_process.stdout.readline()
-            cleaned_line = ''.join(strip_ansi_colour(line)).strip()
-            if cleaned_line[0] != '{':
-                cleaned_line = '{' + cleaned_line
-            state = json.loads(cleaned_line)
+            line = clean_input(game_process.stdout.readline())
+            state = json.loads(line)
 
             state_type = state["type"]
             print(f"{state_type=}")

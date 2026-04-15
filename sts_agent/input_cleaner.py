@@ -18,3 +18,9 @@ def strip_ansi_colour(text: str) -> iter:
             while (b := buff.read(1)) != '{': continue
         else:
             yield b
+
+def clean_input(line):
+    cleaned_line = ''.join(strip_ansi_colour(line)).strip()
+    if cleaned_line[0] != '{':
+        cleaned_line = '{' + cleaned_line
+    return cleaned_line
