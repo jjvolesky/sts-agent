@@ -3,6 +3,7 @@ import os
 import random
 import subprocess
 from time import sleep
+from sts_agent.input_cleaner import clean_input
 
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 
@@ -43,13 +44,13 @@ def game_loop(game_process):
 
     try:
         while game_process.poll() is None:
-            line = game_process.stdout.readline()
+            line = clean_input(game_process.stdout.readline())
             state = json.loads(line)
 
-            type = state["type"]
-            print(f"{type=}")
+            state_type = state["type"]
+            print(f"{state_type=}")
 
-            if type == "error":
+            if state_type == "error":
                 print(f"{last_action=}")
 
                 if last_action == "end_turn":
