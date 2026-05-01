@@ -50,6 +50,8 @@ def game_loop(game_process):
             state_type = state["type"]
             print(f"{state_type=}")
 
+            # TODO add on_combat_enter and on_combat_end somewhere in here
+
             if state_type == "error":
                 print(f"{last_action=}")
 
