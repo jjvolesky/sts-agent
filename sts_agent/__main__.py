@@ -86,7 +86,7 @@ def game_loop(game_process):
                 case "card_select":
                     action = card_select(state)
                 case "combat_play":
-                    action = combat_play(state)
+                    action = combat_play_rl(state)
                 case "event_choice":
                     action = event_choice(state)
                 case "game_over":
@@ -164,6 +164,11 @@ def combat_play(state):
     else:
         action = {"cmd": "action", "action": "end_turn"}
     return action
+
+
+def combat_play_rl(state):
+    # TODO call RL model here
+    return combat_play(state)
 
 
 def event_choice(state):
