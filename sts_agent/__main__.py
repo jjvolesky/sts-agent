@@ -3,7 +3,9 @@ import os
 import random
 import subprocess
 from time import sleep
+
 from sts_agent.input_cleaner import clean_input
+from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
 
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 
@@ -169,8 +171,21 @@ def combat_play(state):
 
 
 def combat_play_rl(state):
-    # TODO call RL model here
-    return combat_play(state)
+    action = run_inference(state)
+
+    if action == 10:
+        action_dict = {"cmd": "action", "action": "end_turn"}
+    else:
+        hand = state["hand"]
+        enemies = state["enemies"]
+
+        card = hand[action]
+        args = {"card_index": card["index"]}
+        if card.get("target_type") == "AnyEnemy" and enemies:
+            args["target_index"] = 0
+        action = {"cmd": "action", "action": "play_card", "args": args}
+
+    return action_dict
 
 
 def event_choice(state):

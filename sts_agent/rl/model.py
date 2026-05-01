@@ -80,23 +80,6 @@ def on_combat_enter(state: dict):
     last_hp = state["player"]["hp"]
 
 
-def build_state_tensor(state: dict) -> torch.Tensor:
-    if TRAINING and state["round"] > 1:
-        record_reward(state)
-
-    # TODO turn the state into a feature vector
-
-    # HP
-
-    # Energy
-
-    # Hand (card types, costs, etc.)
-
-    # Enemies (HP, intents, etc.)
-
-    return torch.zeros(STATE_DIM, dtype=torch.float32)
-
-
 def record_reward(state: dict):
     decision = state.get("decision", "")
 
@@ -123,6 +106,23 @@ def record_reward(state: dict):
             reward = 1.0
 
     episode_rewards.append(reward)
+
+
+def build_state_tensor(state: dict) -> torch.Tensor:
+    if TRAINING and state["round"] > 1:
+        record_reward(state)
+
+    # TODO turn the state into a feature vector
+
+    # HP
+
+    # Energy
+
+    # Hand (card types, costs, etc.)
+
+    # Enemies (HP, intents, etc.)
+
+    return torch.zeros(STATE_DIM, dtype=torch.float32)
 
 
 def run_inference(state: dict) -> str:
