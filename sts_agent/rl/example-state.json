@@ -1,0 +1,372 @@
+{
+    "type": "decision",
+    "decision": "combat_play",
+    "context": {
+        "act": 1,
+        "act_name": "Overgrowth",
+        "floor": 2,
+        "room_type": "Monster",
+        "boss": {
+            "id": "VANTOM_BOSS",
+            "name": "Vantom"
+        }
+    },
+    "round": 1,
+    "energy": 3,
+    "max_energy": 3,
+    "hand": [
+        {
+            "index": 0,
+            "id": "CARD.BASH",
+            "name": "Bash",
+            "cost": 2,
+            "type": "Attack",
+            "can_play": true,
+            "target_type": "AnyEnemy",
+            "stats": {
+                "damage": 8,
+                "vulnerablepower": 2
+            },
+            "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable."
+        },
+        {
+            "index": 1,
+            "id": "CARD.STRIKE_IRONCLAD",
+            "name": "Strike",
+            "cost": 1,
+            "type": "Attack",
+            "can_play": true,
+            "target_type": "AnyEnemy",
+            "stats": {
+                "damage": 6
+            },
+            "description": "Deal {Damage:diff()} damage."
+        },
+        {
+            "index": 2,
+            "id": "CARD.STRIKE_IRONCLAD",
+            "name": "Strike",
+            "cost": 1,
+            "type": "Attack",
+            "can_play": true,
+            "target_type": "AnyEnemy",
+            "stats": {
+                "damage": 6
+            },
+            "description": "Deal {Damage:diff()} damage."
+        },
+        {
+            "index": 3,
+            "id": "CARD.DEFEND_IRONCLAD",
+            "name": "Defend",
+            "cost": 1,
+            "type": "Skill",
+            "can_play": true,
+            "target_type": "Self",
+            "stats": {
+                "block": 5
+            },
+            "description": "Gain {Block:diff()} Block."
+        },
+        {
+            "index": 4,
+            "id": "CARD.STRIKE_IRONCLAD",
+            "name": "Strike",
+            "cost": 1,
+            "type": "Attack",
+            "can_play": true,
+            "target_type": "AnyEnemy",
+            "stats": {
+                "damage": 6
+            },
+            "description": "Deal {Damage:diff()} damage."
+        }
+    ],
+    "enemies": [
+        {
+            "index": 0,
+            "name": "Twig Slime (S)",
+            "hp": 7,
+            "max_hp": 7,
+            "block": 0,
+            "intents": [
+                {
+                    "type": "Attack",
+                    "damage": 4
+                }
+            ],
+            "intends_attack": true,
+            "powers": null
+        },
+        {
+            "index": 1,
+            "name": "Leaf Slime (M)",
+            "hp": 34,
+            "max_hp": 34,
+            "block": 0,
+            "intents": [
+                {
+                    "type": "StatusCard"
+                }
+            ],
+            "intends_attack": false,
+            "powers": null
+        },
+        {
+            "index": 2,
+            "name": "Leaf Slime (S)",
+            "hp": 12,
+            "max_hp": 12,
+            "block": 0,
+            "intents": [
+                {
+                    "type": "StatusCard"
+                }
+            ],
+            "intends_attack": false,
+            "powers": null
+        }
+    ],
+    "player": {
+        "name": "The Ironclad",
+        "hp": 80,
+        "max_hp": 80,
+        "block": 0,
+        "gold": 99,
+        "relics": [
+            {
+                "name": "Burning Blood",
+                "description": "At the end of combat, heal {Heal} HP.",
+                "vars": {
+                    "Heal": 6
+                }
+            },
+            {
+                "name": "Stone Humidifier",
+                "description": "Whenever you Rest at a Rest Site, raise your Max HP by {MaxHp}.",
+                "vars": {
+                    "MaxHp": 5
+                }
+            }
+        ],
+        "potions": [],
+        "deck_size": 10,
+        "deck": [
+            {
+                "id": "CARD.STRIKE_IRONCLAD",
+                "name": "Strike",
+                "cost": 1,
+                "type": "Attack",
+                "upgraded": false,
+                "description": "Deal {Damage:diff()} damage.",
+                "stats": {
+                    "damage": 6
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "damage": 9
+                    },
+                    "description": "Deal {Damage:diff()} damage.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.STRIKE_IRONCLAD",
+                "name": "Strike",
+                "cost": 1,
+                "type": "Attack",
+                "upgraded": false,
+                "description": "Deal {Damage:diff()} damage.",
+                "stats": {
+                    "damage": 6
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "damage": 9
+                    },
+                    "description": "Deal {Damage:diff()} damage.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.STRIKE_IRONCLAD",
+                "name": "Strike",
+                "cost": 1,
+                "type": "Attack",
+                "upgraded": false,
+                "description": "Deal {Damage:diff()} damage.",
+                "stats": {
+                    "damage": 6
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "damage": 9
+                    },
+                    "description": "Deal {Damage:diff()} damage.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.STRIKE_IRONCLAD",
+                "name": "Strike",
+                "cost": 1,
+                "type": "Attack",
+                "upgraded": false,
+                "description": "Deal {Damage:diff()} damage.",
+                "stats": {
+                    "damage": 6
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "damage": 9
+                    },
+                    "description": "Deal {Damage:diff()} damage.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.STRIKE_IRONCLAD",
+                "name": "Strike",
+                "cost": 1,
+                "type": "Attack",
+                "upgraded": false,
+                "description": "Deal {Damage:diff()} damage.",
+                "stats": {
+                    "damage": 6
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "damage": 9
+                    },
+                    "description": "Deal {Damage:diff()} damage.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.DEFEND_IRONCLAD",
+                "name": "Defend",
+                "cost": 1,
+                "type": "Skill",
+                "upgraded": false,
+                "description": "Gain {Block:diff()} Block.",
+                "stats": {
+                    "block": 5
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "block": 8
+                    },
+                    "description": "Gain {Block:diff()} Block.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.DEFEND_IRONCLAD",
+                "name": "Defend",
+                "cost": 1,
+                "type": "Skill",
+                "upgraded": false,
+                "description": "Gain {Block:diff()} Block.",
+                "stats": {
+                    "block": 5
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "block": 8
+                    },
+                    "description": "Gain {Block:diff()} Block.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.DEFEND_IRONCLAD",
+                "name": "Defend",
+                "cost": 1,
+                "type": "Skill",
+                "upgraded": false,
+                "description": "Gain {Block:diff()} Block.",
+                "stats": {
+                    "block": 5
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "block": 8
+                    },
+                    "description": "Gain {Block:diff()} Block.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.DEFEND_IRONCLAD",
+                "name": "Defend",
+                "cost": 1,
+                "type": "Skill",
+                "upgraded": false,
+                "description": "Gain {Block:diff()} Block.",
+                "stats": {
+                    "block": 5
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 1,
+                    "stats": {
+                        "block": 8
+                    },
+                    "description": "Gain {Block:diff()} Block.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            },
+            {
+                "id": "CARD.BASH",
+                "name": "Bash",
+                "cost": 2,
+                "type": "Attack",
+                "upgraded": false,
+                "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
+                "stats": {
+                    "damage": 8,
+                    "vulnerablepower": 2
+                },
+                "keywords": null,
+                "after_upgrade": {
+                    "cost": 2,
+                    "stats": {
+                        "damage": 10,
+                        "vulnerablepower": 3
+                    },
+                    "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
+                    "added_keywords": null,
+                    "removed_keywords": null
+                }
+            }
+        ]
+    },
+    "player_powers": null,
+    "draw_pile_count": 5,
+    "discard_pile_count": 0
+}

@@ -16,7 +16,6 @@ SAVE_PATH = "sts2_agent/rl/model.pth"
 
 STATE_DIM = 111
 ACTION_DIM = 11
-ACTIONS = []
 
 GAMMA = 0.9
 
@@ -25,17 +24,18 @@ class RLModel(nn.Module):
     def __init__(self, hidden_dim: int = 128):
         super().__init__()
 
-        self.feature_net = nn.Sequential(
+        self.net = nn.Sequential(
             nn.Linear(STATE_DIM, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
+            nn.Linear(hidden_dim, ACTION_DIM),
         )
-        self.policy_head = nn.Linear(hidden_dim, ACTION_DIM)
 
     def forward(self, state: torch.Tensor):
-        features = self.feature_net(state)
-        return self.policy_head(features)
+        return self.net(state)
+
+    # https://docs.pytorch.org/docs/2.11/distributions.html
 
     def select_action_training(self, state: torch.Tensor):
         logits = self.forward(state)
@@ -78,10 +78,11 @@ def on_combat_enter():
 
 
 def build_state_tensor(state: dict) -> torch.Tensor:
+    # TODO add this block
     # if training and not first turn in combat
-    # TODO record reward
+        # record reward
 
-    # make state into something that makes sense
+    # TODO make state into something that makes sense
 
     return torch.zeros(STATE_DIM, dtype=torch.float32)
 
@@ -103,7 +104,7 @@ def run_inference(state: dict) -> str:
         model.eval()
         action = model.select_action(state_tensor)
 
-    return ACTIONS[action.item()]
+    return action.item()
 
 
 def on_combat_end(state: dict):
@@ -113,7 +114,8 @@ def on_combat_end(state: dict):
         _ = build_state_tensor(state)
 
         # Trying to do this: https://en.wikipedia.org/wiki/Policy_gradient_method
-        # but I'm bad at math, so best effort.
+        # REINFORCE
+
         returns = []
         G = 0.0
         for reward in reversed(episode_rewards):
@@ -126,7 +128,7 @@ def on_combat_end(state: dict):
             returns = (returns - returns.mean()) / (returns.std() + 1e-8)
 
         log_probs = torch.stack(episode_log_probs)
-        loss = -(log_probs * returns).sum()
+        loss = -(log_probs * returns).mean()
 
         optimizer.zero_grad()
         loss.backward()
