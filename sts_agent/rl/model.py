@@ -37,19 +37,29 @@ class RLModel(nn.Module):
 
     # https://docs.pytorch.org/docs/2.11/distributions.html
 
-    def select_action_training(self, state: torch.Tensor):
+    def select_action_training(self, state: torch.Tensor, valid_actions: torch.Tensor):
         logits = self.forward(state)
-        probs = F.softmax(logits, dim=-1)
+        masked_logits = (
+            logits.clone()
+        )  # don't want to mess with the computation graph in training
+        masked_logits[~valid_actions] = float("-inf")
+
+        probs = F.softmax(masked_logits, dim=-1)
         dist = Categorical(probs)
+
         action = dist.sample()
         log_prob = dist.log_prob(action)
+
         return action, log_prob
 
-    def select_action(self, state: torch.Tensor):
+    def select_action(self, state: torch.Tensor, valid_actions: torch.Tensor):
         with torch.no_grad():
             logits = self.forward(state)
+            logits[~valid_actions] = float("-inf")
+
             probs = F.softmax(logits, dim=-1)
             dist = Categorical(probs)
+
             action = dist.sample()
         return action
 
@@ -78,6 +88,21 @@ def on_combat_enter(state: dict):
         print(f"No checkpoint at {path}. Starting fresh.")
 
     last_hp = state["player"]["hp"]
+
+
+def build_valid_actions(state: dict) -> torch.Tensor:
+    mask = torch.zeros(ACTION_DIM, dtype=torch.bool)
+
+    hand = state.get("hand", [])
+    energy = state.get("energy", 0)
+
+    for i, card in enumerate(hand):
+        playable = card.get("can_play", False) and (card.get("cost", 0) <= energy)
+        mask[i] = playable
+
+    mask[10] = True  # end turn is always valid
+
+    return mask
 
 
 def record_reward(state: dict):
@@ -129,13 +154,16 @@ def run_inference(state: dict) -> str:
     state_tensor = build_state_tensor(state)
     state_tensor = state_tensor.to(DEVICE)
 
+    valid_actions = build_valid_actions(state)
+    valid_actions = valid_actions.to(DEVICE)
+
     if TRAINING:
         model.train()
-        action, log_prob = model.select_action_training(state_tensor)
+        action, log_prob = model.select_action_training(state_tensor, valid_actions)
         episode_log_probs.append(log_prob)
     else:
         model.eval()
-        action = model.select_action(state_tensor)
+        action = model.select_action(state_tensor, valid_actions)
 
     return action.item()
 
