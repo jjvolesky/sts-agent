@@ -59,10 +59,11 @@ optimizer = None
 
 episode_log_probs = []
 episode_rewards = []
+last_hp = -1
 
 
-def on_combat_enter():
-    global model, optimizer
+def on_combat_enter(state: dict):
+    global model, optimizer, last_hp
 
     model = RLModel().to(DEVICE)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
@@ -76,20 +77,52 @@ def on_combat_enter():
     else:
         print(f"No checkpoint at {path}. Starting fresh.")
 
+    last_hp = state["player"]["hp"]
+
 
 def build_state_tensor(state: dict) -> torch.Tensor:
-    # TODO add this block
-    # if training and not first turn in combat
-        # record reward
+    if TRAINING and state["round"] > 1:
+        record_reward(state)
 
-    # TODO make state into something that makes sense
+    # TODO turn the state into a feature vector
+
+    # HP
+
+    # Energy
+
+    # Hand (card types, costs, etc.)
+
+    # Enemies (HP, intents, etc.)
 
     return torch.zeros(STATE_DIM, dtype=torch.float32)
 
 
-def record_reward(reward: float):
-    if TRAINING:
-        episode_rewards.append(reward)
+def record_reward(state: dict):
+    decision = state.get("decision", "")
+
+    """
+    My thought process here (very simple starting, we can expand):
+    - Winning or losing is the same as winning the last combat
+    - Winning a combat is the best reward and losing is the worst
+    - Taking damage is not great but not nearly as bad as losing
+    """
+
+    match decision:
+        case "game_over":
+            victory = state.get("victory", False)
+            reward = 1.0 if victory else -1.0
+        case "combat_play":
+            hp = state["player"]["hp"]
+            global last_hp
+            if hp < last_hp:
+                reward = -0.1
+            else:
+                reward = 0.1
+            last_hp = hp
+        case _:
+            reward = 1.0
+
+    episode_rewards.append(reward)
 
 
 def run_inference(state: dict) -> str:
@@ -108,7 +141,7 @@ def run_inference(state: dict) -> str:
 
 
 def on_combat_end(state: dict):
-    global episode_log_probs, episode_rewards
+    global episode_log_probs, episode_rewards, last_hp
 
     if TRAINING:
         _ = build_state_tensor(state)
@@ -149,3 +182,4 @@ def on_combat_end(state: dict):
 
         episode_log_probs = []
         episode_rewards = []
+        last_hp = -1
