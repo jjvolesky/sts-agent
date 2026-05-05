@@ -1,8 +1,9 @@
+import argparse
 import json
 import os
 import random
 import subprocess
-from time import sleep
+from time import sleep, time
 
 from sts_agent.input_cleaner import clean_input
 from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
@@ -12,14 +13,19 @@ CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 START_CMD = {
     "cmd": "start_run",
     "character": "Ironclad",
-    "seed": "cs540_test_seed",
+    "seed": None,
     "ascension": 0,
 }
 
 
-def main():
+def main(training: bool):
+    if training:
+        START_CMD["seed"] = str(int(time()))
+    else:
+        START_CMD["seed"] = "cs540_test_seed"
+
     game_process = start_game()
-    game_loop(game_process)
+    game_loop(game_process, training)
 
 
 def start_game():
@@ -37,6 +43,7 @@ def start_game():
 
     sleep(1)
 
+    print(f"Starting game with seed: {START_CMD['seed']}")
     game_process.stdin.write(json.dumps(START_CMD) + "\n")
     game_process.stdin.flush()
 
@@ -45,7 +52,7 @@ def start_game():
     return game_process
 
 
-def game_loop(game_process):
+def game_loop(game_process: subprocess.Popen[str], training: bool):
     in_combat = False
 
     try:
@@ -77,7 +84,7 @@ def game_loop(game_process):
 
             if in_combat and decision != "combat_play" and decision != "card_select":
                 in_combat = False
-                on_combat_end(state)
+                on_combat_end(state, training)
 
             match decision:
                 case "bundle_select":
@@ -97,7 +104,7 @@ def game_loop(game_process):
                         in_combat = True
                         on_combat_enter(state)
 
-                    action = combat_play_rl(state)
+                    action = combat_play_rl(state, training)
                 case "event_choice":
                     action = event_choice(state)
                 case "game_over":
@@ -130,7 +137,7 @@ def game_loop(game_process):
         game_process.kill()
 
 
-def card_reward(state):
+def card_reward(state: dict):
     cards = state.get("cards", [])
     if cards:
         action = {
@@ -143,7 +150,7 @@ def card_reward(state):
     return action
 
 
-def card_select(state):
+def card_select(state: dict):
     cards = state.get("cards", [])
     if cards:
         action = {
@@ -156,7 +163,7 @@ def card_select(state):
     return action
 
 
-def combat_play(state):
+def combat_play(state: dict):
     hand = state.get("hand", [])
     energy = state.get("energy", 0)
     enemies = state.get("enemies", [])
@@ -176,8 +183,8 @@ def combat_play(state):
     return action
 
 
-def combat_play_rl(state):
-    action = run_inference(state)
+def combat_play_rl(state: dict, training: bool):
+    action = run_inference(state, training)
 
     if action == 10:
         action_dict = {"cmd": "action", "action": "end_turn"}
@@ -194,7 +201,7 @@ def combat_play_rl(state):
     return action_dict
 
 
-def event_choice(state):
+def event_choice(state: dict):
     options = state.get("options", [])
     if options:
         choice = next((o for o in options if not o.get("is_locked")), options[0])
@@ -208,7 +215,7 @@ def event_choice(state):
     return action
 
 
-def map_select(state):
+def map_select(state: dict):
     choices = state.get("choices", [])
     choice = random.choice(choices)
     action = {
@@ -219,7 +226,7 @@ def map_select(state):
     return action
 
 
-def rest_site(state):
+def rest_site(state: dict):
     options = state.get("options", [])
     enabled = [o for o in options if o.get("is_enabled", True)]
     heal = next((o for o in enabled if o.get("option_id") == "HEAL"), None)
@@ -236,4 +243,7 @@ def rest_site(state):
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--training", action="store_true")
+    args = parser.parse_args()
+    main(args.training)

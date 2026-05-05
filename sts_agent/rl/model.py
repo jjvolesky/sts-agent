@@ -11,7 +11,6 @@ DEVICE = (
     else "mps" if torch.backends.mps.is_available() else "cpu"
 )
 
-TRAINING = True
 SAVE_PATH = "sts_agent/rl/model.pt"
 
 STATE_DIM = 35
@@ -135,8 +134,8 @@ def record_reward(state: dict):
     episode_rewards.append(reward)
 
 
-def build_state_tensor(state: dict) -> torch.Tensor:
-    if TRAINING:
+def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
+    if training:
         record_reward(state)
 
     # player info
@@ -193,14 +192,14 @@ def build_state_tensor(state: dict) -> torch.Tensor:
     return state_features
 
 
-def run_inference(state: dict) -> str:
-    state_tensor = build_state_tensor(state)
+def run_inference(state: dict, training: bool) -> str:
+    state_tensor = build_state_tensor(state, training)
     state_tensor = state_tensor.to(DEVICE)
 
     valid_actions = build_valid_actions(state)
     valid_actions = valid_actions.to(DEVICE)
 
-    if TRAINING:
+    if training:
         model.train()
         action, log_prob = model.select_action_training(state_tensor, valid_actions)
         episode_log_probs.append(log_prob)
@@ -211,11 +210,11 @@ def run_inference(state: dict) -> str:
     return action.item()
 
 
-def on_combat_end(state: dict):
+def on_combat_end(state: dict, training: bool):
     global episode_log_probs, episode_rewards, last_hp
 
-    if TRAINING:
-        _ = build_state_tensor(state)
+    if training:
+        _ = build_state_tensor(state, training)
 
         # drop the first reward since it was for entering combat
         episode_rewards = episode_rewards[1:]
@@ -264,7 +263,7 @@ if __name__ == "__main__":
     with open("sts_agent/rl/example-state.json", "r") as f:
         example_state = json.load(f)
 
-    state_tensor = build_state_tensor(example_state)
+    state_tensor = build_state_tensor(example_state, training=False)
 
     print(state_tensor.shape)
     print(state_tensor)
