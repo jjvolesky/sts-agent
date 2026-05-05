@@ -241,7 +241,6 @@ def on_combat_end(state: dict):
         print(f"Training step done. Loss: {loss.item():.4f}")
 
         path = Path(SAVE_PATH)
-        path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(
             {
                 "model_state_dict": model.state_dict(),

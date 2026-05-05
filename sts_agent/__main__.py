@@ -35,8 +35,12 @@ def start_game():
         bufsize=1,
     )
 
+    sleep(0.5)
+
     game_process.stdin.write(json.dumps(START_CMD) + "\n")
     game_process.stdin.flush()
+
+    sleep(0.5)
 
     return game_process
 
@@ -51,8 +55,6 @@ def game_loop(game_process):
 
             state_type = state["type"]
             print(f"{state_type=}")
-
-            # TODO add on_combat_enter and on_combat_end somewhere in here
 
             if state_type == "error":
                 print(f"{last_action=}")
@@ -78,6 +80,9 @@ def game_loop(game_process):
             decision = state["decision"]
             print(f"{decision=}")
 
+            if last_action == "combat_play" and decision != "combat_play":
+                on_combat_end(state)
+
             match decision:
                 case "bundle_select":
                     action = {
@@ -90,6 +95,8 @@ def game_loop(game_process):
                 case "card_select":
                     action = card_select(state)
                 case "combat_play":
+                    if last_action != "combat_play":
+                        on_combat_enter(state)
                     action = combat_play_rl(state)
                 case "event_choice":
                     action = event_choice(state)
@@ -183,7 +190,7 @@ def combat_play_rl(state):
         args = {"card_index": card["index"]}
         if card.get("target_type") == "AnyEnemy" and enemies:
             args["target_index"] = 0
-        action = {"cmd": "action", "action": "play_card", "args": args}
+        action_dict = {"cmd": "action", "action": "play_card", "args": args}
 
     return action_dict
 
