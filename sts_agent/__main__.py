@@ -3,7 +3,7 @@ import json
 import os
 import random
 import subprocess
-from time import sleep, time
+from time import sleep
 
 from sts_agent.input_cleaner import clean_input
 from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
@@ -17,15 +17,20 @@ START_CMD = {
     "ascension": 0,
 }
 
+TRAINING_GAMES = 1000
+random.seed(42)
+
 
 def main(training: bool):
     if training:
-        START_CMD["seed"] = str(int(time()))
+        for i in range(TRAINING_GAMES):
+            START_CMD["seed"] = str(i)
+            game_process = start_game()
+            game_loop(game_process, training)
     else:
         START_CMD["seed"] = "cs540_test_seed"
-
-    game_process = start_game()
-    game_loop(game_process, training)
+        game_process = start_game()
+        game_loop(game_process, training)
 
 
 def start_game():

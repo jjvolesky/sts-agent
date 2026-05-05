@@ -13,7 +13,7 @@ DEVICE = (
 
 SAVE_PATH = "sts_agent/rl/model.pt"
 
-STATE_DIM = 35
+STATE_DIM = 55
 ACTION_DIM = 11
 
 GAMMA = 0.9
@@ -153,6 +153,8 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
     playable = [0.0] * HAND_SIZE
     skills = [0.0] * HAND_SIZE
     attacks = [0.0] * HAND_SIZE
+    block_percents = [0.0] * HAND_SIZE
+    damage_percents = [0.0] * HAND_SIZE
 
     for i, card in enumerate(hand):
         playable[i] = (
@@ -160,20 +162,30 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
             if (card.get("can_play", False) and card.get("cost", 0) <= energy)
             else 0.0
         )
-        skills[i] = 1.0 if card.get("type") == "Skill" else 0.0
-        attacks[i] = 1.0 if card.get("type") == "Attack" else 0.0
+
+        card_type = card.get("type", "")
+
+        if card_type == "Skill":
+            skills[i] = 1.0
+            block_percents[i] = card["stats"].get("block", 0.0) / max_hp
+
+        if card_type == "Attack":
+            attacks[i] = 1.0
+            damage_percents[i] = card["stats"].get("damage", 0.0) / max_hp
 
     # enemy info
 
     enemies = state.get("enemies", [])
 
     enemy_count = len(enemies)
+
     enemy_hp_ratios = []
     for enemy in enemies:
         enemy_hp = enemy.get("hp", 0)
         enemy_max_hp = enemy.get("max_hp", 1)
         enemy_hp_ratios.append(enemy_hp / enemy_max_hp if enemy_max_hp else 0.0)
     enemy_hp_avg = sum(enemy_hp_ratios) / enemy_count if enemy_count else 0.0
+
     incoming_damage = sum(e.get("intent", {}).get("damage", 0) for e in enemies)
 
     state_features = torch.tensor(
@@ -181,10 +193,12 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
         + playable
         + skills
         + attacks
+        + block_percents
+        + damage_percents
         + [
             enemy_count,
             enemy_hp_avg,
-            incoming_damage / enemy_count if enemy_count else 0.0,
+            incoming_damage / max_hp,
         ],
         dtype=torch.float32,
     )
