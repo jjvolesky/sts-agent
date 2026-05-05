@@ -35,18 +35,18 @@ def start_game():
         bufsize=1,
     )
 
-    sleep(0.5)
+    sleep(1)
 
     game_process.stdin.write(json.dumps(START_CMD) + "\n")
     game_process.stdin.flush()
 
-    sleep(0.5)
+    sleep(1)
 
     return game_process
 
 
 def game_loop(game_process):
-    last_action = None
+    in_combat = False
 
     try:
         while game_process.poll() is None:
@@ -57,15 +57,10 @@ def game_loop(game_process):
             print(f"{state_type=}")
 
             if state_type == "error":
-                print(f"{last_action=}")
-
-                if last_action == "end_turn":
+                if random.random() < 0.5:
                     action = {"cmd": "action", "action": "proceed"}
                 else:
                     action = {"cmd": "action", "action": "leave_room"}
-
-                print(f"{action=}")
-                last_action = action["action"]
 
                 game_process.stdin.write(json.dumps(action) + "\n")
                 game_process.stdin.flush()
@@ -77,11 +72,12 @@ def game_loop(game_process):
                 sleep(1)
                 continue
 
+            if in_combat and decision != "combat_play" and decision != "card_select":
+                in_combat = False
+                on_combat_end(state)
+
             decision = state["decision"]
             print(f"{decision=}")
-
-            if last_action == "combat_play" and decision != "combat_play":
-                on_combat_end(state)
 
             match decision:
                 case "bundle_select":
@@ -95,8 +91,12 @@ def game_loop(game_process):
                 case "card_select":
                     action = card_select(state)
                 case "combat_play":
-                    if last_action != "combat_play":
+                    current_round = state["round"]
+
+                    if not in_combat and current_round == 1:
+                        in_combat = True
                         on_combat_enter(state)
+
                     action = combat_play_rl(state)
                 case "event_choice":
                     action = event_choice(state)
@@ -125,7 +125,6 @@ def game_loop(game_process):
             game_process.stdin.write(json.dumps(action) + "\n")
             game_process.stdin.flush()
 
-            last_action = action["action"]
             sleep(1)
     finally:
         game_process.kill()
