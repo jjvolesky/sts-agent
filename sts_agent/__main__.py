@@ -121,7 +121,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                         f"floor {context.get('floor')} "
                         f"(HP: {player.get('hp')}/{player.get('max_hp')}, "
                         f"Gold: {player.get('gold')}, "
-                        f"Deck: {player.get('deck_size')} cards)"
+                        f"Deck: {player.get('deck_size')} cards)\n"
                     )
                     break
                 case "map_select":
