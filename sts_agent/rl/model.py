@@ -14,10 +14,12 @@ DEVICE = (
 TRAINING = True
 SAVE_PATH = "sts2_agent/rl/model.pth"
 
-STATE_DIM = 111
+STATE_DIM = 35
 ACTION_DIM = 11
 
 GAMMA = 0.9
+
+HAND_SIZE = 10
 
 
 class RLModel(nn.Module):
@@ -137,17 +139,58 @@ def build_state_tensor(state: dict) -> torch.Tensor:
     if TRAINING and state["round"] > 1:
         record_reward(state)
 
-    # TODO turn the state into a feature vector
+    # player info
 
-    # HP
+    hp = state["player"]["hp"]
+    max_hp = state["player"]["max_hp"]
 
-    # Energy
+    energy = state.get("energy", 0)
+    max_energy = state.get("max_energy", 0)
 
-    # Hand (card types, costs, etc.)
+    # hand info
 
-    # Enemies (HP, intents, etc.)
+    hand = state.get("hand", [])
 
-    return torch.zeros(STATE_DIM, dtype=torch.float32)
+    playable = [0.0] * HAND_SIZE
+    skills = [0.0] * HAND_SIZE
+    attacks = [0.0] * HAND_SIZE
+
+    for i, card in enumerate(hand):
+        playable[i] = (
+            1.0
+            if (card.get("can_play", False) and card.get("cost", 0) <= energy)
+            else 0.0
+        )
+        skills[i] = 1.0 if card.get("type") == "Skill" else 0.0
+        attacks[i] = 1.0 if card.get("type") == "Attack" else 0.0
+
+    # enemy info
+
+    enemies = state.get("enemies", [])
+
+    enemy_count = len(enemies)
+    enemy_hp_ratios = []
+    for enemy in enemies:
+        enemy_hp = enemy.get("hp", 0)
+        enemy_max_hp = enemy.get("max_hp", 1)
+        enemy_hp_ratios.append(enemy_hp / enemy_max_hp if enemy_max_hp else 0.0)
+    enemy_hp_avg = sum(enemy_hp_ratios) / enemy_count if enemy_count else 0.0
+    incoming_damage = sum(e.get("intent", {}).get("damage", 0) for e in enemies)
+
+    state_features = torch.tensor(
+        [hp / max_hp, energy / max_energy if max_energy else 0.0]
+        + playable
+        + skills
+        + attacks
+        + [
+            enemy_count,
+            enemy_hp_avg,
+            incoming_damage / enemy_count if enemy_count else 0.0,
+        ],
+        dtype=torch.float32,
+    )
+
+    return state_features
 
 
 def run_inference(state: dict) -> str:
@@ -211,3 +254,14 @@ def on_combat_end(state: dict):
         episode_log_probs = []
         episode_rewards = []
         last_hp = -1
+
+
+if __name__ == "__main__":
+    import json
+
+    with open("sts_agent/rl/example-state.json", "r") as f:
+        example_state = json.load(f)
+
+    state_tensor = build_state_tensor(example_state)
+    print(state_tensor.shape)
+    print(state_tensor)
