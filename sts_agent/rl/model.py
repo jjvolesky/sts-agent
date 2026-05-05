@@ -12,7 +12,7 @@ DEVICE = (
 )
 
 TRAINING = True
-SAVE_PATH = "sts2_agent/rl/model.pth"
+SAVE_PATH = "sts_agent/rl/model.pt"
 
 STATE_DIM = 35
 ACTION_DIM = 11
@@ -136,7 +136,7 @@ def record_reward(state: dict):
 
 
 def build_state_tensor(state: dict) -> torch.Tensor:
-    if TRAINING and state["round"] > 1:
+    if TRAINING:
         record_reward(state)
 
     # player info
@@ -217,8 +217,11 @@ def on_combat_end(state: dict):
     if TRAINING:
         _ = build_state_tensor(state)
 
+        # drop the first reward since it was for entering combat
+        episode_rewards = episode_rewards[1:]
+
         # Trying to do this: https://en.wikipedia.org/wiki/Policy_gradient_method
-        # REINFORCE
+        # REINFORCE / Monte Carlo policy gradient
 
         returns = []
         G = 0.0
@@ -262,5 +265,6 @@ if __name__ == "__main__":
         example_state = json.load(f)
 
     state_tensor = build_state_tensor(example_state)
+
     print(state_tensor.shape)
     print(state_tensor)
