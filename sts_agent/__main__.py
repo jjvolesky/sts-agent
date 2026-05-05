@@ -72,12 +72,12 @@ def game_loop(game_process):
                 sleep(1)
                 continue
 
+            decision = state["decision"]
+            print(f"{decision=}")
+
             if in_combat and decision != "combat_play" and decision != "card_select":
                 in_combat = False
                 on_combat_end(state)
-
-            decision = state["decision"]
-            print(f"{decision=}")
 
             match decision:
                 case "bundle_select":
