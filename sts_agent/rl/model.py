@@ -11,7 +11,8 @@ DEVICE = (
     else "mps" if torch.backends.mps.is_available() else "cpu"
 )
 
-SAVE_PATH = "sts_agent/rl/model.pt"
+CHECKPOINT_PATH = "sts_agent/rl/model_checkpoint.pt"
+LOSS_PATH = "sts_agent/rl/loss_log.txt"
 
 STATE_DIM = 55
 ACTION_DIM = 11
@@ -79,7 +80,7 @@ def on_combat_enter(state: dict):
     model = RLModel().to(DEVICE)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-    path = Path(SAVE_PATH)
+    path = Path(CHECKPOINT_PATH)
     if path.exists():
         checkpoint = torch.load(path, map_location=DEVICE)
         model.load_state_dict(checkpoint["model_state_dict"])
@@ -250,13 +251,16 @@ def on_combat_end(state: dict, training: bool):
         log_probs = torch.stack(episode_log_probs)
         loss = -(log_probs * returns).mean()
 
+        with open(LOSS_PATH, "a") as f:
+            f.write(f"{loss.item()}\n")
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
         print(f"Training step done. Loss: {loss.item():.4f}")
 
-        path = Path(SAVE_PATH)
+        path = Path(CHECKPOINT_PATH)
         torch.save(
             {
                 "model_state_dict": model.state_dict(),
