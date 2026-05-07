@@ -1,5 +1,6 @@
 import io
 
+
 # thank you to s3dev (https://stackoverflow.com/a/78114529/27856187)
 def strip_ansi_colour(text: str) -> iter:
     """Strip ANSI colour sequences from a string.
@@ -13,14 +14,16 @@ def strip_ansi_colour(text: str) -> iter:
 
     """
     buff = io.StringIO(text)
-    while (b := buff.read(1)):
-        if b == '\x1b':
-            while (b := buff.read(1)) != '{': continue
+    while b := buff.read(1):
+        if b == "\x1b":
+            while (b := buff.read(1)) != "{":
+                continue
         else:
             yield b
 
+
 def clean_input(line):
-    cleaned_line = ''.join(strip_ansi_colour(line)).strip()
-    if cleaned_line[0] != '{':
-        cleaned_line = '{' + cleaned_line
+    cleaned_line = "".join(strip_ansi_colour(line)).strip()
+    if cleaned_line[0] != "{":
+        cleaned_line = "{" + cleaned_line
     return cleaned_line
