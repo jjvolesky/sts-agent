@@ -71,11 +71,13 @@ optimizer = None
 
 episode_log_probs = []
 episode_rewards = []
+
 last_hp = -1
+last_enemy_count = -1
 
 
 def on_combat_enter(state: dict):
-    global model, optimizer, last_hp
+    global model, optimizer, last_hp, last_enemy_count
 
     model = RLModel().to(DEVICE)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
@@ -90,6 +92,7 @@ def on_combat_enter(state: dict):
         print(f"No checkpoint at {path}. Starting fresh.")
 
     last_hp = state["player"]["hp"]
+    last_enemy_count = len(state.get("enemies", []))
 
 
 def build_valid_actions(state: dict) -> torch.Tensor:
@@ -110,31 +113,40 @@ def build_valid_actions(state: dict) -> torch.Tensor:
 def record_reward(state: dict):
     decision = state.get("decision", "")
 
-    w_h = 1
-    h = 0
+    w_h = 1.0
+    h = 0.0
 
-    w_v = 1
-    v = 0
+    w_e = 1.0
+    e = 0.0
+
+    w_v = 1.0
+    v = 0.0
 
     match decision:
         case "game_over":
             victory = state.get("victory", False)
             v = 5.0 if victory else -5.0
         case "combat_play":
-            global last_hp
-            hp = state["player"]["hp"]
+            global last_hp, last_enemy_count
 
+            hp = state["player"]["hp"]
             if hp < last_hp - 10:
-                h = -1.0
+                h = -0.1
             else:
-                h = 2.0
+                h = 0.1
+
+            enemy_count = len(state.get("enemies", []))
+            if enemy_count < last_enemy_count:
+                e = 0.5
+            else:
+                e = 0.0
 
             last_hp = hp
+            last_enemy_count = enemy_count
         case _:
             v = 5.0
 
-    reward = w_h * h + w_v * v
-
+    reward = w_h * h + w_e * e + w_v * v
     episode_rewards.append(reward)
 
 
@@ -230,7 +242,7 @@ def run_inference(state: dict, training: bool) -> str:
 
 
 def on_combat_end(state: dict, training: bool):
-    global episode_log_probs, episode_rewards, last_hp
+    global episode_log_probs, episode_rewards, last_hp, last_enemy_count
 
     if training:
         _ = build_state_tensor(state, training)
@@ -276,7 +288,9 @@ def on_combat_end(state: dict, training: bool):
 
         episode_log_probs = []
         episode_rewards = []
+
         last_hp = -1
+        last_enemy_count = -1
 
 
 if __name__ == "__main__":
