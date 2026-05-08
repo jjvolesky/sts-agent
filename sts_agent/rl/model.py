@@ -124,7 +124,7 @@ def record_reward(state: dict):
         case "combat_play":
             hp = state["player"]["hp"]
             global last_hp
-            if hp < last_hp:
+            if hp < last_hp - 5:
                 reward = -0.1
             else:
                 reward = 0.1
@@ -165,14 +165,15 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
         )
 
         card_type = card.get("type", "")
+        stats = card.get("stats", {})
 
         if card_type == "Skill":
             skills[i] = 1.0
-            block_percents[i] = card["stats"].get("block", 0.0) / max_hp
+            block_percents[i] = stats.get("block", 0.0) / max_hp
 
         if card_type == "Attack":
             attacks[i] = 1.0
-            damage_percents[i] = card["stats"].get("damage", 0.0) / max_hp
+            damage_percents[i] = stats.get("damage", 0.0) / max_hp
 
     # enemy info
 
