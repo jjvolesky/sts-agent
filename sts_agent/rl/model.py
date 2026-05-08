@@ -110,34 +110,30 @@ def build_valid_actions(state: dict) -> torch.Tensor:
 def record_reward(state: dict):
     decision = state.get("decision", "")
 
-    """
-    My thought process here (very simple starting, we can expand):
-    - Winning or losing is the same as getting past a combat or not
-    - Winning a combat is the best reward and losing is the worst
-    - Taking damage is not great but not nearly as bad as losing
-    """
+    w_h = 1
+    h = 0
 
-    """
-    Maybe this should be a simple function with weights:
-    weight * damage + weight * victory + weight * other_factors
-    and we could improve it by including things like enemies killed
-    and making a more complex reward function that isn't as simple
-    """
+    w_v = 1
+    v = 0
 
     match decision:
         case "game_over":
             victory = state.get("victory", False)
-            reward = 1.0 if victory else -1.0
+            v = 5.0 if victory else -5.0
         case "combat_play":
-            hp = state["player"]["hp"]
             global last_hp
+            hp = state["player"]["hp"]
+
             if hp < last_hp - 10:
-                reward = -0.1
+                h = -1.0
             else:
-                reward = 0.1
+                h = 2.0
+
             last_hp = hp
         case _:
-            reward = 1.0
+            v = 5.0
+
+    reward = w_h * h + w_v * v
 
     episode_rewards.append(reward)
 
@@ -172,7 +168,7 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
         )
 
         card_type = card.get("type", "")
-        stats = card.get("stats", {})
+        stats = card.get("stats") or {}
 
         if card_type == "Skill":
             skills[i] = 1.0
