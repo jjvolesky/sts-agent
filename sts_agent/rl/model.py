@@ -112,9 +112,16 @@ def record_reward(state: dict):
 
     """
     My thought process here (very simple starting, we can expand):
-    - Winning or losing is the same as winning the last combat
+    - Winning or losing is the same as getting past a combat or not
     - Winning a combat is the best reward and losing is the worst
     - Taking damage is not great but not nearly as bad as losing
+    """
+
+    """
+    Maybe this should be a simple function with weights:
+    weight * damage + weight * victory + weight * other_factors
+    and we could improve it by including things like enemies killed
+    and making a more complex reward function that isn't as simple
     """
 
     match decision:
