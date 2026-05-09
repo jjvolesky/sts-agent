@@ -18,7 +18,7 @@ START_CMD = {
     "ascension": 0,
 }
 
-TRAINING_GAMES = 1000
+TRAINING_GAMES = 250
 random.seed(42)
 
 
