@@ -80,7 +80,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                 sleep(0.5)
                 continue
 
-            if not "decision" in state:
+            if "decision" not in state:
                 sleep(0.5)
                 continue
 
