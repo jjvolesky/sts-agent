@@ -9,6 +9,7 @@ from sts_agent.input_cleaner import clean_input
 from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
 
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
+TRAINING_LOG_PATH = "sts_agent/rl/training_log.txt"
 
 START_CMD = {
     "cmd": "start_run",
@@ -59,6 +60,7 @@ def start_game():
 
 def game_loop(game_process: subprocess.Popen[str], training: bool):
     in_combat = False
+    combats = 0
 
     try:
         while game_process.poll() is None:
@@ -108,6 +110,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                     if not in_combat and current_round == 1:
                         in_combat = True
                         on_combat_enter(state)
+                        combats += 1
 
                     action = combat_play_rl(state, training)
                 case "event_choice":
@@ -116,6 +119,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                     victory = state.get("victory", False)
                     player = state.get("player", {})
                     context = state.get("context", {})
+
                     print(
                         f"\n{'VICTORY' if victory else 'DEFEAT'} at act {context.get('act')}, "
                         f"floor {context.get('floor')} "
@@ -123,6 +127,13 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                         f"Gold: {player.get('gold')}, "
                         f"Deck: {player.get('deck_size')} cards)\n"
                     )
+
+                    if training:
+                        with open(TRAINING_LOG_PATH, "a") as f:
+                            act = context["act"]
+                            floor = context["floor"]
+                            f.write(f"{act},{floor},{combats}\n")
+
                     break
                 case "map_select":
                     action = map_select(state)

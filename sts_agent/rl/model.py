@@ -13,7 +13,6 @@ DEVICE = (
 
 CHECKPOINT_PATH = "sts_agent/rl/model_checkpoint.pt"
 LOSS_PATH = "sts_agent/rl/loss_log.txt"
-FLOOR_PATH = "sts_agent/rl/floor_log.txt"
 
 STATE_DIM = 55
 ACTION_DIM = 11
@@ -28,14 +27,16 @@ HAND_SIZE = 10
 
 
 class RLModel(nn.Module):
-    def __init__(self, hidden_dim: int = 64):
+    def __init__(self, hidden_dim: int = 128):
         super().__init__()
 
         self.net = nn.Sequential(
             nn.Linear(STATE_DIM, hidden_dim),
-            nn.ReLU(),
+            nn.LayerNorm(hidden_dim),
+            nn.Tanh(),
             nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
+            nn.LayerNorm(hidden_dim),
+            nn.Tanh(),
             nn.Linear(hidden_dim, ACTION_DIM),
         )
 
@@ -85,7 +86,8 @@ def on_combat_enter(state: dict):
     global model, optimizer, last_hp, last_enemy_count
 
     model = RLModel().to(DEVICE)
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    # Karpathy constant lol
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
 
     path = Path(CHECKPOINT_PATH)
     if path.exists():
@@ -131,11 +133,6 @@ def record_reward(state: dict):
         case "game_over":
             victory = state.get("victory", False)
             v = 5.0 if victory else -5.0
-
-            with open(FLOOR_PATH, "a") as f:
-                act = state["context"]["act"]
-                floor = state["context"]["floor"]
-                f.write(f"{act},{floor}\n")
         case "combat_play":
             global last_hp, last_enemy_count
 
