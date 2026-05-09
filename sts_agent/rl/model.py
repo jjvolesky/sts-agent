@@ -14,7 +14,7 @@ DEVICE = (
 CHECKPOINT_PATH = "sts_agent/rl/model_checkpoint.pt"
 LOSS_PATH = "sts_agent/rl/loss_log.txt"
 
-STATE_DIM = 55
+STATE_DIM = 66
 ACTION_DIM = 11
 
 W_HP = 1.0
@@ -166,6 +166,7 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
 
     hp = state["player"]["hp"]
     max_hp = state["player"]["max_hp"]
+    block = state["player"]["block"]
 
     energy = state.get("energy", 0)
     max_energy = state.get("max_energy", 0)
@@ -175,6 +176,7 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
     hand = state.get("hand", [])
 
     playable = [0.0] * HAND_SIZE
+    costs = [0.0] * HAND_SIZE
     skills = [0.0] * HAND_SIZE
     attacks = [0.0] * HAND_SIZE
     block_percents = [0.0] * HAND_SIZE
@@ -186,6 +188,8 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
             if (card.get("can_play", False) and card.get("cost", 0) <= energy)
             else 0.0
         )
+
+        costs[i] = card.get("cost", 0)
 
         card_type = card.get("type", "")
         stats = card.get("stats") or {}
@@ -205,23 +209,32 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
     enemy_count = len(enemies)
 
     enemy_hp_ratios = []
+    incoming_damage = 0
+    attacking_count = 0
+
     for enemy in enemies:
         enemy_hp = enemy.get("hp", 0)
         enemy_max_hp = enemy.get("max_hp", 1)
         enemy_hp_ratios.append(enemy_hp / enemy_max_hp if enemy_max_hp else 0.0)
+
+        intent = enemy.get("intent", {})
+        attacking_count += 1 if intent.get("type") == "Attack" else 0
+        incoming_damage += intent.get("damage", 0)
+
     enemy_hp_avg = sum(enemy_hp_ratios) / enemy_count if enemy_count else 0.0
 
-    incoming_damage = sum(e.get("intent", {}).get("damage", 0) for e in enemies)
+    # bring together all features
 
     state_features = torch.tensor(
-        [hp / max_hp, energy / max_energy if max_energy else 0.0]
+        [hp / max_hp, block / max_hp, energy / max_energy if max_energy else 0.0]
         + playable
+        + costs
         + skills
         + attacks
         + block_percents
         + damage_percents
         + [
-            enemy_count,
+            attacking_count / enemy_count,
             enemy_hp_avg,
             incoming_damage / max_hp,
         ],
