@@ -46,13 +46,13 @@ def start_game():
         bufsize=1,
     )
 
-    sleep(1)
+    sleep(0.5)
 
     print(f"Starting game with seed: {START_CMD['seed']}")
     game_process.stdin.write(json.dumps(START_CMD) + "\n")
     game_process.stdin.flush()
 
-    sleep(1)
+    sleep(0.5)
 
     return game_process
 
@@ -77,11 +77,11 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                 game_process.stdin.write(json.dumps(action) + "\n")
                 game_process.stdin.flush()
 
-                sleep(1)
+                sleep(0.5)
                 continue
 
             if not "decision" in state:
-                sleep(1)
+                sleep(0.5)
                 continue
 
             decision = state["decision"]
@@ -137,7 +137,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
             game_process.stdin.write(json.dumps(action) + "\n")
             game_process.stdin.flush()
 
-            sleep(1)
+            sleep(0.5)
     finally:
         game_process.kill()
 

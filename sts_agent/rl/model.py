@@ -18,6 +18,10 @@ FLOOR_PATH = "sts_agent/rl/floor_log.txt"
 STATE_DIM = 55
 ACTION_DIM = 11
 
+W_HP = 1.0
+W_ENEMIES = 1.0
+W_VICTORY = 1.0
+
 GAMMA = 0.9
 
 HAND_SIZE = 10
@@ -114,13 +118,13 @@ def build_valid_actions(state: dict) -> torch.Tensor:
 def record_reward(state: dict):
     decision = state.get("decision", "")
 
-    w_h = 1.0
+    w_h = W_HP
     h = 0.0
 
-    w_e = 1.0
+    w_e = W_ENEMIES
     e = 0.0
 
-    w_v = 1.0
+    w_v = W_VICTORY
     v = 0.0
 
     match decision:
