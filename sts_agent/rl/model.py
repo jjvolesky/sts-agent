@@ -154,6 +154,7 @@ def record_reward(state: dict):
             last_hp = hp
             last_enemy_count = enemy_count
         case _:
+            # this reward pairs with the last action of the combat that just ended
             v = 5.0
 
     reward = w_h * h + w_e * e + w_v * v
