@@ -33,16 +33,20 @@ class RLModel(nn.Module):
             nn.Linear(hidden_dim, hidden_dim),
             nn.LayerNorm(hidden_dim),
             nn.Tanh(),
-            nn.Linear(hidden_dim, ACTION_DIM),
         )
 
+        self.policy_head = nn.Linear(hidden_dim, ACTION_DIM)
+
+        self.value_head = nn.Linear(hidden_dim, 1)
+
     def forward(self, state: torch.Tensor):
-        return self.net(state)
+        out = self.net(state)
+        return self.policy_head(out), self.value_head(out).squeeze(-1)
 
     # https://docs.pytorch.org/docs/2.11/distributions.html
 
     def select_action_training(self, state: torch.Tensor, valid_actions: torch.Tensor):
-        logits = self.forward(state)
+        logits, value = self.forward(state)
         masked_logits = (
             logits.clone()
         )  # don't want to mess with the computation graph in training
@@ -54,11 +58,11 @@ class RLModel(nn.Module):
         action = dist.sample()
         log_prob = dist.log_prob(action)
 
-        return action, log_prob
+        return action, log_prob, value
 
     def select_action(self, state: torch.Tensor, valid_actions: torch.Tensor):
         with torch.no_grad():
-            logits = self.forward(state)
+            logits, _ = self.forward(state)
             logits[~valid_actions] = float("-inf")
 
             probs = F.softmax(logits, dim=-1)
@@ -73,6 +77,7 @@ optimizer = None
 
 episode_log_probs = []
 episode_rewards = []
+episode_values = []
 
 last_hp = -1
 last_enemy_hp = 0
@@ -239,8 +244,9 @@ def run_inference(state: dict, training: bool) -> str:
 
     if training:
         model.train()
-        action, log_prob = model.select_action_training(state_tensor, valid_actions)
+        action, log_prob, value = model.select_action_training(state_tensor, valid_actions)
         episode_log_probs.append(log_prob)
+        episode_values.append(value)
     else:
         model.eval()
         action = model.select_action(state_tensor, valid_actions)
@@ -249,7 +255,7 @@ def run_inference(state: dict, training: bool) -> str:
 
 
 def on_combat_end(state: dict, training: bool):
-    global episode_log_probs, episode_rewards, last_hp, last_enemy_hp
+    global episode_log_probs, episode_rewards, episode_values, last_hp, last_enemy_hp
 
     if training:
         _ = build_state_tensor(state, training)
@@ -265,21 +271,26 @@ def on_combat_end(state: dict, training: bool):
         for reward in reversed(episode_rewards):
             G = reward + GAMMA * G
             returns.insert(0, G)
-
         returns = torch.tensor(returns, dtype=torch.float32, device=DEVICE)
 
-        if len(returns) > 1:
-            returns = (returns - returns.mean()) / (returns.std() + 1e-8)
+        values = torch.stack(episode_values)
+
+        advantages = returns - values.detach()
+        if len(advantages) > 1:
+            advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
 
         log_probs = torch.stack(episode_log_probs)
-        loss = -(log_probs * returns).mean()
 
-        with open(LOSS_PATH, "a") as f:
-            f.write(f"{loss.item()}\n")
+        policy_loss = -(log_probs * advantages).mean()
+        value_loss = F.mse_loss(values, returns)
+        loss = policy_loss + 0.5 * value_loss
 
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
+        with open(LOSS_PATH, "a") as f:
+            f.write(f"{policy_loss.item()},{value_loss.item()}\n")
 
         print(f"Training step done. Loss: {loss.item():.4f}")
 
@@ -295,6 +306,7 @@ def on_combat_end(state: dict, training: bool):
 
         episode_log_probs = []
         episode_rewards = []
+        episode_values = []
 
         last_hp = -1
         last_enemy_hp = 0
