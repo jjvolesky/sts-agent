@@ -13,6 +13,7 @@ DEVICE = (
 
 CHECKPOINT_PATH = "sts_agent/rl/model_checkpoint.pt"
 LOSS_PATH = "sts_agent/rl/loss_log.txt"
+FLOOR_PATH = "sts_agent/rl/floor_log.txt"
 
 STATE_DIM = 55
 ACTION_DIM = 11
@@ -126,6 +127,11 @@ def record_reward(state: dict):
         case "game_over":
             victory = state.get("victory", False)
             v = 5.0 if victory else -5.0
+
+            with open(FLOOR_PATH, "a") as f:
+                act = state["context"]["act"]
+                floor = state["context"]["floor"]
+                f.write(f"{act},{floor}\n")
         case "combat_play":
             global last_hp, last_enemy_count
 
