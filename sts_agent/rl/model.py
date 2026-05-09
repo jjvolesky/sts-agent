@@ -17,10 +17,6 @@ LOSS_PATH = "sts_agent/rl/loss_log.txt"
 STATE_DIM = 66
 ACTION_DIM = 11
 
-W_HP = 1.0
-W_ENEMIES = 1.0
-W_VICTORY = 1.0
-
 GAMMA = 0.9
 
 HAND_SIZE = 10
@@ -79,11 +75,11 @@ episode_log_probs = []
 episode_rewards = []
 
 last_hp = -1
-last_enemy_count = -1
+last_enemy_hp = 0
 
 
 def on_combat_enter(state: dict):
-    global model, optimizer, last_hp, last_enemy_count
+    global model, optimizer, last_hp, last_enemy_hp
 
     model = RLModel().to(DEVICE)
     # Karpathy constant lol
@@ -99,7 +95,7 @@ def on_combat_enter(state: dict):
         print(f"No checkpoint at {path}. Starting fresh.")
 
     last_hp = state["player"]["hp"]
-    last_enemy_count = len(state.get("enemies", []))
+    last_enemy_hp = sum(enemy.get("hp", 0) for enemy in state.get("enemies", []))
 
 
 def build_valid_actions(state: dict) -> torch.Tensor:
@@ -118,44 +114,34 @@ def build_valid_actions(state: dict) -> torch.Tensor:
 
 
 def record_reward(state: dict):
+    global last_hp, last_enemy_hp
+
+    hp = state["player"]["hp"]
+    max_hp = state["player"]["max_hp"]
+    block = state["player"]["block"]
+
+    enemy_hp = 0
+    incoming_damage = 0
+    for enemy in state.get("enemies", []):
+        enemy_hp += enemy.get("hp", 0)
+        incoming_damage += enemy.get("intent", {}).get("damage", 0)
+
+    damage_reward = (last_enemy_hp - enemy_hp) / max_hp
+    block_reward = min(block, incoming_damage) / max(incoming_damage, 1)
+    hp_penalty = (hp - last_hp) / max_hp
+
     decision = state.get("decision", "")
+    if decision != "combat_play" and decision != "game_over":
+        # this means combat ended and we survived
+        end_of_combat_bonus = 5 * (hp / max_hp)
+    else:
+        end_of_combat_bonus = 0
 
-    w_h = W_HP
-    h = 0.0
-
-    w_e = W_ENEMIES
-    e = 0.0
-
-    w_v = W_VICTORY
-    v = 0.0
-
-    match decision:
-        case "game_over":
-            victory = state.get("victory", False)
-            v = 5.0 if victory else -5.0
-        case "combat_play":
-            global last_hp, last_enemy_count
-
-            hp = state["player"]["hp"]
-            if hp < last_hp - 10:
-                h = -0.1
-            else:
-                h = 0.1
-
-            enemy_count = len(state.get("enemies", []))
-            if enemy_count < last_enemy_count:
-                e = 0.5
-            else:
-                e = 0.0
-
-            last_hp = hp
-            last_enemy_count = enemy_count
-        case _:
-            # this reward pairs with the last action of the combat that just ended
-            v = 5.0
-
-    reward = w_h * h + w_e * e + w_v * v
+    reward = damage_reward + block_reward + end_of_combat_bonus + hp_penalty
     episode_rewards.append(reward)
+
+    last_hp = hp
+    last_enemy_hp = enemy_hp
 
 
 def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
@@ -189,7 +175,7 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
             else 0.0
         )
 
-        costs[i] = card.get("cost", 0)
+        costs[i] = card.get("cost", 0) / max_energy if max_energy else 0.0
 
         card_type = card.get("type", "")
         stats = card.get("stats") or {}
@@ -234,7 +220,7 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
         + block_percents
         + damage_percents
         + [
-            attacking_count / enemy_count,
+            attacking_count / enemy_count if enemy_count else 0.0,
             enemy_hp_avg,
             incoming_damage / max_hp,
         ],
@@ -263,7 +249,7 @@ def run_inference(state: dict, training: bool) -> str:
 
 
 def on_combat_end(state: dict, training: bool):
-    global episode_log_probs, episode_rewards, last_hp, last_enemy_count
+    global episode_log_probs, episode_rewards, last_hp, last_enemy_hp
 
     if training:
         _ = build_state_tensor(state, training)
@@ -311,7 +297,7 @@ def on_combat_end(state: dict, training: bool):
         episode_rewards = []
 
         last_hp = -1
-        last_enemy_count = -1
+        last_enemy_hp = 0
 
 
 if __name__ == "__main__":
