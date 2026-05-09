@@ -244,7 +244,9 @@ def run_inference(state: dict, training: bool) -> str:
 
     if training:
         model.train()
-        action, log_prob, value = model.select_action_training(state_tensor, valid_actions)
+        action, log_prob, value = model.select_action_training(
+            state_tensor, valid_actions
+        )
         episode_log_probs.append(log_prob)
         episode_values.append(value)
     else:
