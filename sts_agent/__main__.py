@@ -5,6 +5,8 @@ import random
 import subprocess
 from time import sleep
 
+import numpy as np
+
 from sts_agent.input_cleaner import clean_input
 from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
 
@@ -45,9 +47,13 @@ def main(training: bool, rl: bool, pathing: bool):
         combats.append(combat_count)
 
     if not training:
-        print(f"\nAvg act: {sum(acts)/len(acts):.2f}")
-        print(f"Avg floor: {sum(floors)/len(floors):.2f}")
-        print(f"Avg combats: {sum(combats)/len(combats):.2f}")
+        acts = np.asarray(acts)
+        floors = np.asarray(floors)
+        combats = np.asarray(combats)
+
+        print(f"\nAct: {acts.mean():.2f} +/- {acts.std():.2f}")
+        print(f"Floor: {floors.mean():.2f} +/- {floors.std():.2f}")
+        print(f"Combats: {combats.mean():.2f} +/- {combats.std():.2f}")
 
 
 def start_game(seed: str):
