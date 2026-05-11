@@ -11,30 +11,30 @@ from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 TRAINING_LOG_PATH = "sts_agent/rl/training_log.txt"
 
-START_CMD = {
-    "cmd": "start_run",
-    "character": "Ironclad",
-    "seed": None,
-    "ascension": 0,
-}
-
 TRAINING_GAMES = 250
+TESTING_GAMES = 30
+
+TRAINING_SEED = ""
+TESTING_SEED = "cs540_test_seed_"
+
 random.seed(42)
 
 
 def main(training: bool):
     if training:
-        for i in range(TRAINING_GAMES):
-            START_CMD["seed"] = str(i)
-            game_process = start_game()
-            game_loop(game_process, training)
+        games = TRAINING_GAMES
+        base_seed = TRAINING_SEED
     else:
-        START_CMD["seed"] = "cs540_test_seed"
-        game_process = start_game()
+        games = TESTING_GAMES
+        base_seed = TESTING_SEED
+
+    for i in range(games):
+        seed = f"{base_seed}{i}"
+        game_process = start_game(seed)
         game_loop(game_process, training)
 
 
-def start_game():
+def start_game(seed: str):
     game_process = subprocess.Popen(
         ["dotnet", "run", "--project", "src/Sts2Headless/Sts2Headless.csproj"],
         cwd=CLI_DIR,
@@ -46,15 +46,20 @@ def start_game():
         text=True,
         bufsize=1,
     )
-
     sleep(0.5)
 
-    print(f"Starting game with seed: {START_CMD['seed']}")
-    game_process.stdin.write(json.dumps(START_CMD) + "\n")
+    print(f"Starting game with seed: {seed}")
+    start_command = {
+        "cmd": "start_run",
+        "character": "Ironclad",
+        "seed": seed,
+        "ascension": 0,
+    }
+
+    game_process.stdin.write(json.dumps(start_command) + "\n")
     game_process.stdin.flush()
 
     sleep(0.5)
-
     return game_process
 
 
