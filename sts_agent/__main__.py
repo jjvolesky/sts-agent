@@ -284,7 +284,7 @@ def shop_select(state: dict):
     gold = state["player"]["gold"]
     relics = state.get("relics", [])
     action = None
-    if gold >= state["card_removal_cost"] and has_strike(state):
+    if gold >= state["card_removal_cost"] and has_strike(state["player"]):
         global PREV_STATE
         PREV_STATE = state
         action = {
@@ -303,10 +303,12 @@ def shop_select(state: dict):
                 }
     return action if action else {"cmd": "action", "action": "leave_room"}
 
+
 def has_strike(player_state: dict):
     for card in player_state["deck"]:
         if card["name"] == "Strike": return True
     return False
+
 
 def index_of_strike(cards):
     for card in cards:
