@@ -19,7 +19,8 @@ TESTING_SEED = "cs540_test_seed_"
 
 random.seed(42)
 
-PREV_STATE = None # necessary for shop removal
+PREV_STATE = None  # necessary for shop removal
+
 
 def main(training: bool, rl: bool, pathing: bool):
     if training:
