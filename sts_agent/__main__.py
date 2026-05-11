@@ -129,7 +129,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                 case "rest_site":
                     action = rest_site(state)
                 case "shop":
-                    action = {"cmd": "action", "action": "leave_room"}
+                    action = shop_select(state)#{"cmd": "action", "action": "leave_room"}
                 case _:
                     action = {"cmd": "action", "action": "proceed"}
 
@@ -148,7 +148,7 @@ def card_reward(state: dict):
         action = {
             "cmd": "action",
             "action": "select_card_reward",
-            "args": {"card_index": 0},
+            "args": {"card_index": random.randint(0, len(cards)-1)}, # select card reward at random
         }
     else:
         action = {"cmd": "action", "action": "skip_card_reward"}
@@ -161,7 +161,7 @@ def card_select(state: dict):
         action = {
             "cmd": "action",
             "action": "select_cards",
-            "args": {"indices": "0"},
+            "args": {"indices": random.randint(0, len(cards)-1)}, # select card at random
         }
     else:
         action = {"cmd": "action", "action": "skip_select"}
@@ -208,12 +208,12 @@ def combat_play_rl(state: dict, training: bool):
 
 def event_choice(state: dict):
     options = state.get("options", [])
-    if options:
-        choice = next((o for o in options if not o.get("is_locked")), options[0])
+    choices = [o for o in options if not o.get("is_locked")]
+    if len(choices) > 0:
         action = {
             "cmd": "action",
             "action": "choose_option",
-            "args": {"option_index": choice["index"]},
+            "args": {"option_index": random.randint(0, len(choices)-1)}, # randomly select an option if able to
         }
     else:
         action = {"cmd": "action", "action": "leave_room"}
@@ -228,6 +228,26 @@ def map_select(state: dict):
         "action": "select_map_node",
         "args": {"col": choice["col"], "row": choice["row"]},
     }
+    return action
+
+
+def shop_select(state: dict):
+    gold = state["player"]["gold"]
+    relics = state.get("relics", [])
+    if relics: # try to buy relics if have enough gold
+        relic_tuples = [(relic["cost"], index) for index, relic in relics]
+        relic_tuples.sort(key=lambda x: x[0])
+        for relic in relic_tuples:
+            if gold > relic[0]:
+                action = {
+                    "cmd": "action",
+                    "action": "do_buy_relic",
+                    "args": {"relic_index": relic[1]}
+                }
+                break
+        action = {"cmd": "action", "action": "leave_room"}
+    else:
+        action = {"cmd": "action", "action": "leave_room"}
     return action
 
 
