@@ -242,7 +242,7 @@ def shop_select(state: dict):
     gold = state["player"]["gold"]
     relics = state.get("relics", [])
     action = None
-    if gold >= state["card_removal_cost"] and has_strike:
+    if gold >= state["card_removal_cost"] and has_strike(state):
         global PREV_STATE
         PREV_STATE = state
         action = {
