@@ -20,4 +20,4 @@ This will add the git submodule of the project we forked, build that (which will
 
 Note that the forked project is a Git submodule, which has been added as an SSH submodule. This will not work if SSH cloning is not set up.
 
-After that, `run.sh`, is the main entry point. With no flags, it will play seeded runs using our methodology and trained model (we utilized this for the ablation study). To train a model instead of running the seeded test run, use `run.sh --training`.
+After that, `run.sh`, is the main entry point and what we used for training and our ablation study. With no flags, it will play seeded runs using the pure random method. The `--rl` and `--pathing` flags introduce those aspects of our methodology. To train a model instead of running the seeded test run, use `run.sh --training`.

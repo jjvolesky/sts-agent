@@ -20,18 +20,32 @@ TESTING_SEED = "cs540_test_seed_"
 random.seed(42)
 
 
-def main(training: bool):
+def main(training: bool, rl: bool, pathing: bool):
     if training:
         games = TRAINING_GAMES
         base_seed = TRAINING_SEED
+
+        # overrides for when we are training
+        rl = True
+        pathing = False
     else:
         games = TESTING_GAMES
         base_seed = TESTING_SEED
 
+    acts, floors, combats = [], [], []
     for i in range(games):
         seed = f"{base_seed}{i}"
         game_process = start_game(seed)
-        game_loop(game_process, training)
+
+        act, floor, combat_count = game_loop(game_process, training, rl, pathing)
+        acts.append(act)
+        floors.append(floor)
+        combats.append(combat_count)
+
+    if not training:
+        print(f"\nAvg act: {sum(acts)/len(acts):.2f}")
+        print(f"Avg floor: {sum(floors)/len(floors):.2f}")
+        print(f"Avg combats: {sum(combats)/len(combats):.2f}")
 
 
 def start_game(seed: str):
@@ -63,7 +77,7 @@ def start_game(seed: str):
     return game_process
 
 
-def game_loop(game_process: subprocess.Popen[str], training: bool):
+def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pathing: bool):
     in_combat = False
     combats = 0
 
@@ -94,7 +108,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
             decision = state["decision"]
             print(f"{decision=}")
 
-            if in_combat and decision != "combat_play" and decision != "card_select":
+            if rl and in_combat and decision != "combat_play" and decision != "card_select":
                 in_combat = False
                 on_combat_end(state, training)
 
@@ -112,18 +126,24 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                 case "combat_play":
                     current_round = state["round"]
 
-                    if not in_combat and current_round == 1:
+                    if rl and not in_combat and current_round == 1:
                         in_combat = True
                         on_combat_enter(state)
                         combats += 1
 
-                    action = combat_play_rl(state, training)
+                    if rl:
+                        action = combat_play_rl(state, training)
+                    else:
+                        action = combat_play(state)
                 case "event_choice":
                     action = event_choice(state)
                 case "game_over":
                     victory = state.get("victory", False)
                     player = state.get("player", {})
                     context = state.get("context", {})
+
+                    act = context["act"]
+                    floor = context["floor"]
 
                     print(
                         f"\n{'VICTORY' if victory else 'DEFEAT'} at act {context.get('act')}, "
@@ -135,13 +155,14 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
 
                     if training:
                         with open(TRAINING_LOG_PATH, "a") as f:
-                            act = context["act"]
-                            floor = context["floor"]
                             f.write(f"{act},{floor},{combats}\n")
 
-                    break
+                    return act, floor, combats
                 case "map_select":
-                    action = map_select(state)
+                    if pathing:
+                        raise NotImplementedError("Pathing logic not implemented yet")
+                    else:
+                        action = map_select(state)
                 case "rest_site":
                     action = rest_site(state)
                 case "shop":
@@ -265,6 +286,11 @@ def rest_site(state: dict):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+
     parser.add_argument("--training", action="store_true")
+    parser.add_argument("--rl", action="store_true")
+    parser.add_argument("--pathing", action="store_true")
+
     args = parser.parse_args()
-    main(args.training)
+
+    main(args.training, args.rl, args.pathing)
