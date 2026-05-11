@@ -108,9 +108,11 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
             decision = state["decision"]
             print(f"{decision=}")
 
-            if rl and in_combat and decision != "combat_play" and decision != "card_select":
+            if in_combat and decision != "combat_play" and decision != "card_select":
                 in_combat = False
-                on_combat_end(state, training)
+
+                if rl:
+                    on_combat_end(state, training)
 
             match decision:
                 case "bundle_select":
@@ -126,10 +128,12 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
                 case "combat_play":
                     current_round = state["round"]
 
-                    if rl and not in_combat and current_round == 1:
+                    if not in_combat and current_round == 1:
                         in_combat = True
-                        on_combat_enter(state)
                         combats += 1
+
+                        if rl:
+                            on_combat_enter(state)
 
                     if rl:
                         action = combat_play_rl(state, training)
