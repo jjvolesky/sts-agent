@@ -20,6 +20,7 @@ START_CMD = {
 TRAINING_GAMES = 1000
 random.seed(42)
 
+PREV_STATE = None # necessary for shop removal
 
 def main(training: bool):
     if training:
@@ -129,7 +130,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                 case "rest_site":
                     action = rest_site(state)
                 case "shop":
-                    action = {"cmd": "action", "action": "leave_room"}
+                    action = shop_select(state)
                 case _:
                     action = {"cmd": "action", "action": "proceed"}
 
@@ -148,7 +149,7 @@ def card_reward(state: dict):
         action = {
             "cmd": "action",
             "action": "select_card_reward",
-            "args": {"card_index": 0},
+            "args": {"card_index": random.randint(0, len(cards)-1)}, # select card reward at random
         }
     else:
         action = {"cmd": "action", "action": "skip_card_reward"}
@@ -157,11 +158,17 @@ def card_reward(state: dict):
 
 def card_select(state: dict):
     cards = state.get("cards", [])
-    if cards:
+    if PREV_STATE and PREV_STATE["decision"] == "shop" and not index_of_strike(cards) == -1:
         action = {
             "cmd": "action",
             "action": "select_cards",
-            "args": {"indices": "0"},
+            "args": {"indices": f"{index_of_strike(cards)}"}
+        }
+    elif cards:
+        action = {
+            "cmd": "action",
+            "action": "select_cards",
+            "args": {"indices": f"{random.randint(0, len(cards)-1)}"}, # select card at random
         }
     else:
         action = {"cmd": "action", "action": "skip_select"}
@@ -208,12 +215,12 @@ def combat_play_rl(state: dict, training: bool):
 
 def event_choice(state: dict):
     options = state.get("options", [])
-    if options:
-        choice = next((o for o in options if not o.get("is_locked")), options[0])
+    choices = [o for o in options if not o.get("is_locked")]
+    if len(choices) > 0:
         action = {
             "cmd": "action",
             "action": "choose_option",
-            "args": {"option_index": choice["index"]},
+            "args": {"option_index": random.randint(0, len(choices)-1)}, # randomly select an option if able to
         }
     else:
         action = {"cmd": "action", "action": "leave_room"}
@@ -230,6 +237,40 @@ def map_select(state: dict):
         "args": {"col": choice["col"], "row": choice["row"]},
     }
     return action
+
+
+def shop_select(state: dict):
+    gold = state["player"]["gold"]
+    relics = state.get("relics", [])
+    action = None
+    if gold >= state["card_removal_cost"] and has_strike(state):
+        global PREV_STATE
+        PREV_STATE = state
+        action = {
+            "cmd": "action",
+            "action": "remove_card"
+        }
+    if relics: # try to buy relics if have enough gold
+        relic_tuples = [(relic["cost"], relic["index"]) for relic in relics]
+        relic_tuples.sort(key=lambda x: x[0])
+        for relic in relic_tuples:
+            if gold >= relic[0]:
+                action = {
+                    "cmd": "action",
+                    "action": "do_buy_relic",
+                    "args": {"relic_index": relic[1]}
+                }
+    return action if action else {"cmd": "action", "action": "leave_room"}
+
+def has_strike(player_state: dict):
+    for card in player_state["deck"]:
+        if card["name"] == "Strike": return True
+    return False
+
+def index_of_strike(cards):
+    for card in cards:
+        if card["name"] == "Strike": return card["index"]
+    return -1
 
 
 def rest_site(state: dict):
@@ -253,3 +294,8 @@ if __name__ == "__main__":
     parser.add_argument("--training", action="store_true")
     args = parser.parse_args()
     main(args.training)
+
+    # with open("example-json/example-shop.json", 'r') as f:
+    #     shop_state = json.load(f)
+    #     action = shop_select(shop_state)
+    #     print(action)
