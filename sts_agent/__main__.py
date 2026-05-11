@@ -249,7 +249,7 @@ def shop_select(state: dict):
             "cmd": "action",
             "action": "remove_card"
         }
-    elif relics: # try to buy relics if have enough gold
+    if relics: # try to buy relics if have enough gold
         relic_tuples = [(relic["cost"], relic["index"]) for relic in relics]
         relic_tuples.sort(key=lambda x: x[0])
         for relic in relic_tuples:
@@ -293,3 +293,8 @@ if __name__ == "__main__":
     parser.add_argument("--training", action="store_true")
     args = parser.parse_args()
     main(args.training)
+
+    # with open("example-json/example-shop.json", 'r') as f:
+    #     shop_state = json.load(f)
+    #     action = shop_select(shop_state)
+    #     print(action)

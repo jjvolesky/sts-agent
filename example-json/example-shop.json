@@ -1,541 +1,553 @@
 {
-    "type": "decision",
-    "decision": "shop",
-    "context": {
-        "act": 1,
-        "act_name": "Overgrowth",
-        "floor": 4,
-        "room_type": "Shop",
-        "boss": {
-            "id": "VANTOM_BOSS",
-            "name": "Vantom"
-        }
-    },
-    "cards": [
-        {
-            "index": 0,
-            "name": "Breakthrough",
-            "type": "Attack",
-            "rarity": "Common",
-            "card_cost": 1,
-            "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage to ALL enemies.",
-            "stats": None,
-            "keywords": None,
-            "after_upgrade": {
-                "cost": 1,
-                "stats": {
-                    "damage": 13,
-                    "hploss": 1
-                },
-                "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage to ALL enemies.",
-                "added_keywords": None,
-                "removed_keywords": None
-            },
-            "cost": 49,
-            "is_stocked": True,
-            "on_sale": False
-        },
-        {
-            "index": 1,
-            "name": "Hemokinesis",
-            "type": "Attack",
-            "rarity": "Uncommon",
-            "card_cost": 1,
-            "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage.",
-            "stats": None,
-            "keywords": None,
-            "after_upgrade": {
-                "cost": 1,
-                "stats": {
-                    "hploss": 2,
-                    "damage": 19
-                },
-                "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage.",
-                "added_keywords": None,
-                "removed_keywords": None
-            },
-            "cost": 73,
-            "is_stocked": True,
-            "on_sale": False
-        },
-        {
-            "index": 2,
-            "name": "Forgotten Ritual",
-            "type": "Skill",
-            "rarity": "Uncommon",
-            "card_cost": 1,
-            "description": "If you Exhausted a card this turn, gain {Energy:energyIcons()}.",
-            "stats": None,
-            "keywords": None,
-            "after_upgrade": {
-                "cost": 1,
-                "stats": {
-                    "energy": 4
-                },
-                "description": "If you Exhausted a card this turn, gain {Energy:energyIcons()}.",
-                "added_keywords": None,
-                "removed_keywords": None
-            },
-            "cost": 76,
-            "is_stocked": True,
-            "on_sale": False
-        },
-        {
-            "index": 3,
-            "name": "Blood Wall",
-            "type": "Skill",
-            "rarity": "Common",
-            "card_cost": 2,
-            "description": "Lose {HpLoss:diff()} HP.\nGain {Block:diff()} Block.",
-            "stats": None,
-            "keywords": None,
-            "after_upgrade": {
-                "cost": 2,
-                "stats": {
-                    "hploss": 2,
-                    "block": 20
-                },
-                "description": "Lose {HpLoss:diff()} HP.\nGain {Block:diff()} Block.",
-                "added_keywords": None,
-                "removed_keywords": None
-            },
-            "cost": 52,
-            "is_stocked": True,
-            "on_sale": False
-        },
-        {
-            "index": 4,
-            "name": "Inflame",
-            "type": "Power",
-            "rarity": "Uncommon",
-            "card_cost": 1,
-            "description": "Gain {StrengthPower:diff()} Strength.",
-            "stats": None,
-            "keywords": None,
-            "after_upgrade": {
-                "cost": 1,
-                "stats": {
-                    "strengthpower": 3
-                },
-                "description": "Gain {StrengthPower:diff()} Strength.",
-                "added_keywords": None,
-                "removed_keywords": None
-            },
-            "cost": 37,
-            "is_stocked": True,
-            "on_sale": True
-        },
-        {
-            "index": 5,
-            "name": "Panic Button",
-            "type": "Skill",
-            "rarity": "Uncommon",
-            "card_cost": 0,
-            "description": "Gain {Block:diff()} Block.\nYou cannot gain Block from cards for {Turns:diff()} {Turns:plural:turn|turns}.",
-            "stats": None,
-            "keywords": [
-                "Exhaust"
-            ],
-            "after_upgrade": {
-                "cost": 0,
-                "stats": {
-                    "block": 40,
-                    "turns": 2
-                },
-                "description": "Gain {Block:diff()} Block.\nYou cannot gain Block from cards for {Turns:diff()} {Turns:plural:turn|turns}.",
-                "added_keywords": None,
-                "removed_keywords": None
-            },
-            "cost": 88,
-            "is_stocked": True,
-            "on_sale": False
-        },
-        {
-            "index": 6,
-            "name": "Hidden Gem",
-            "type": "Skill",
-            "rarity": "Rare",
-            "card_cost": 1,
-            "description": "A random card in your Draw Pile gains Replay {Replay:diff()}.",
-            "stats": None,
-            "keywords": None,
-            "after_upgrade": {
-                "cost": 1,
-                "stats": {
-                    "replay": 3
-                },
-                "description": "A random card in your Draw Pile gains Replay {Replay:diff()}.",
-                "added_keywords": None,
-                "removed_keywords": None
-            },
-            "cost": 180,
-            "is_stocked": True,
-            "on_sale": False
-        }
-    ],
-    "relics": [
-        {
-            "index": 0,
-            "name": "Bronze Scales",
-            "description": "Start each combat with {ThornsPower} Thorns.",
-            "cost": 221,
-            "is_stocked": True
-        },
-        {
-            "index": 1,
-            "name": "Centennial Puzzle",
-            "description": "The first time you lose HP each combat, draw {Cards} {Cards:plural:card|cards}.",
-            "cost": 194,
-            "is_stocked": True
-        },
-        {
-            "index": 2,
-            "name": "Belt Buckle",
-            "description": "While you have no potions, you have {DexterityPower} additional Dexterity.",
-            "cost": 227,
-            "is_stocked": True
-        }
-    ],
-    "potions": [
-        {
-            "index": 0,
-            "name": "Orobic Acid",
-            "description": "Add a random Attack, Skill, and Power into your Hand. They"re free to play this turn.", "cost": 100, "is_stocked": True}, {"index": 1, "name": "Energy Potion", "description": "Gain {Energy:energyIcons()
-            }.", "cost": 50, "is_stocked": True}, {"index": 2, "name": "Gambler"s Brew",
-            "description": "Discard any number of cards, then draw that many.",
-            "cost": 75,
-            "is_stocked": True
-        }
-    ],
-    "card_removal_cost": 75,
-    "player": {
-        "name": "The Ironclad",
-        "hp": 45,
-        "max_hp": 80,
-        "block": 0,
-        "gold": 12,
-        "relics": [
-            {
-                "name": "Burning Blood",
-                "description": "At the end of combat, heal {Heal} HP.",
-                "vars": {
-                    "Heal": 6
-                }
-            },
-            {
-                "name": "Scroll Boxes",
-                "description": "Upon pickup, lose all Gold and choose 1 of 2 packs of cards to add to your Deck.",
-                "vars": None
-            },
-            {
-                "name": "Sword of Stone",
-                "description": "Transforms into a powerful Relic after defeating {Elites} {Elites:plural:Elite|Elites}.",
-                "vars": {
-                    "Elites": 5
-                }
-            }
-        ],
-        "potions": [],
-        "deck_size": 14,
-        "deck": [
-            {
-                "id": "CARD.STRIKE_IRONCLAD",
-                "name": "Strike",
-                "cost": 1,
-                "type": "Attack",
-                "upgraded": False,
-                "description": "Deal {Damage:diff()} damage.",
-                "stats": {
-                    "damage": 6
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "damage": 9
-                    },
-                    "description": "Deal {Damage:diff()} damage.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.STRIKE_IRONCLAD",
-                "name": "Strike",
-                "cost": 1,
-                "type": "Attack",
-                "upgraded": False,
-                "description": "Deal {Damage:diff()} damage.",
-                "stats": {
-                    "damage": 6
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "damage": 9
-                    },
-                    "description": "Deal {Damage:diff()} damage.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.STRIKE_IRONCLAD",
-                "name": "Strike",
-                "cost": 1,
-                "type": "Attack",
-                "upgraded": False,
-                "description": "Deal {Damage:diff()} damage.",
-                "stats": {
-                    "damage": 6
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "damage": 9
-                    },
-                    "description": "Deal {Damage:diff()} damage.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.STRIKE_IRONCLAD",
-                "name": "Strike",
-                "cost": 1,
-                "type": "Attack",
-                "upgraded": False,
-                "description": "Deal {Damage:diff()} damage.",
-                "stats": {
-                    "damage": 6
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "damage": 9
-                    },
-                    "description": "Deal {Damage:diff()} damage.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.STRIKE_IRONCLAD",
-                "name": "Strike",
-                "cost": 1,
-                "type": "Attack",
-                "upgraded": False,
-                "description": "Deal {Damage:diff()} damage.",
-                "stats": {
-                    "damage": 6
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "damage": 9
-                    },
-                    "description": "Deal {Damage:diff()} damage.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.DEFEND_IRONCLAD",
-                "name": "Defend",
-                "cost": 1,
-                "type": "Skill",
-                "upgraded": False,
-                "description": "Gain {Block:diff()} Block.",
-                "stats": {
-                    "block": 5
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "block": 8
-                    },
-                    "description": "Gain {Block:diff()} Block.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.DEFEND_IRONCLAD",
-                "name": "Defend",
-                "cost": 1,
-                "type": "Skill",
-                "upgraded": False,
-                "description": "Gain {Block:diff()} Block.",
-                "stats": {
-                    "block": 5
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "block": 8
-                    },
-                    "description": "Gain {Block:diff()} Block.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.DEFEND_IRONCLAD",
-                "name": "Defend",
-                "cost": 1,
-                "type": "Skill",
-                "upgraded": False,
-                "description": "Gain {Block:diff()} Block.",
-                "stats": {
-                    "block": 5
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "block": 8
-                    },
-                    "description": "Gain {Block:diff()} Block.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.DEFEND_IRONCLAD",
-                "name": "Defend",
-                "cost": 1,
-                "type": "Skill",
-                "upgraded": False,
-                "description": "Gain {Block:diff()} Block.",
-                "stats": {
-                    "block": 5
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "block": 8
-                    },
-                    "description": "Gain {Block:diff()} Block.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.BASH",
-                "name": "Bash",
-                "cost": 2,
-                "type": "Attack",
-                "upgraded": False,
-                "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
-                "stats": {
-                    "damage": 8,
-                    "vulnerablepower": 2
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 2,
-                    "stats": {
-                        "damage": 10,
-                        "vulnerablepower": 3
-                    },
-                    "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.ARMAMENTS",
-                "name": "Armaments",
-                "cost": 1,
-                "type": "Skill",
-                "upgraded": False,
-                "description": "Gain {Block:diff()} Block.\nUpgrade {IfUpgraded:show:ALL cards|a card} in your Hand.",
-                "stats": {
-                    "block": 5
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "block": 5
-                    },
-                    "description": "Gain {Block:diff()} Block.\nUpgrade {IfUpgraded:show:ALL cards|a card} in your Hand.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.POMMEL_STRIKE",
-                "name": "Pommel Strike",
-                "cost": 1,
-                "type": "Attack",
-                "upgraded": False,
-                "description": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
-                "stats": {
-                    "damage": 9,
-                    "cards": 1
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "damage": 10,
-                        "cards": 2
-                    },
-                    "description": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.SECOND_WIND",
-                "name": "Second Wind",
-                "cost": 1,
-                "type": "Skill",
-                "upgraded": False,
-                "description": "Exhaust all non-Attack cards in your Hand. Gain {Block:diff()} Block for each card Exhausted.",
-                "stats": {
-                    "block": 5
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "block": 7
-                    },
-                    "description": "Exhaust all non-Attack cards in your Hand. Gain {Block:diff()} Block for each card Exhausted.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            },
-            {
-                "id": "CARD.FEEL_NO_PAIN",
-                "name": "Feel No Pain",
-                "cost": 1,
-                "type": "Power",
-                "upgraded": False,
-                "description": "Whenever a card is Exhausted, gain {Power:diff()} Block.",
-                "stats": {
-                    "power": 3
-                },
-                "keywords": None,
-                "after_upgrade": {
-                    "cost": 1,
-                    "stats": {
-                        "power": 4
-                    },
-                    "description": "Whenever a card is Exhausted, gain {Power:diff()} Block.",
-                    "added_keywords": None,
-                    "removed_keywords": None
-                }
-            }
-        ]
+  "type": "decision",
+  "decision": "shop",
+  "context": {
+    "act": 1,
+    "act_name": "Overgrowth",
+    "floor": 4,
+    "room_type": "Shop",
+    "boss": {
+      "id": "VANTOM_BOSS",
+      "name": "Vantom"
     }
+  },
+  "cards": [
+    {
+      "index": 0,
+      "name": "Breakthrough",
+      "type": "Attack",
+      "rarity": "Common",
+      "card_cost": 1,
+      "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage to ALL enemies.",
+      "stats": null,
+      "keywords": null,
+      "after_upgrade": {
+        "cost": 1,
+        "stats": {
+          "damage": 13,
+          "hploss": 1
+        },
+        "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage to ALL enemies.",
+        "added_keywords": null,
+        "removed_keywords": null
+      },
+      "cost": 49,
+      "is_stocked": true,
+      "on_sale": false
+    },
+    {
+      "index": 1,
+      "name": "Hemokinesis",
+      "type": "Attack",
+      "rarity": "Uncommon",
+      "card_cost": 1,
+      "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage.",
+      "stats": null,
+      "keywords": null,
+      "after_upgrade": {
+        "cost": 1,
+        "stats": {
+          "hploss": 2,
+          "damage": 19
+        },
+        "description": "Lose {HpLoss:diff()} HP.\nDeal {Damage:diff()} damage.",
+        "added_keywords": null,
+        "removed_keywords": null
+      },
+      "cost": 73,
+      "is_stocked": true,
+      "on_sale": false
+    },
+    {
+      "index": 2,
+      "name": "Forgotten Ritual",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "card_cost": 1,
+      "description": "If you Exhausted a card this turn, gain {Energy:energyIcons()}.",
+      "stats": null,
+      "keywords": null,
+      "after_upgrade": {
+        "cost": 1,
+        "stats": {
+          "energy": 4
+        },
+        "description": "If you Exhausted a card this turn, gain {Energy:energyIcons()}.",
+        "added_keywords": null,
+        "removed_keywords": null
+      },
+      "cost": 76,
+      "is_stocked": true,
+      "on_sale": false
+    },
+    {
+      "index": 3,
+      "name": "Blood Wall",
+      "type": "Skill",
+      "rarity": "Common",
+      "card_cost": 2,
+      "description": "Lose {HpLoss:diff()} HP.\nGain {Block:diff()} Block.",
+      "stats": null,
+      "keywords": null,
+      "after_upgrade": {
+        "cost": 2,
+        "stats": {
+          "hploss": 2,
+          "block": 20
+        },
+        "description": "Lose {HpLoss:diff()} HP.\nGain {Block:diff()} Block.",
+        "added_keywords": null,
+        "removed_keywords": null
+      },
+      "cost": 52,
+      "is_stocked": true,
+      "on_sale": false
+    },
+    {
+      "index": 4,
+      "name": "Inflame",
+      "type": "Power",
+      "rarity": "Uncommon",
+      "card_cost": 1,
+      "description": "Gain {StrengthPower:diff()} Strength.",
+      "stats": null,
+      "keywords": null,
+      "after_upgrade": {
+        "cost": 1,
+        "stats": {
+          "strengthpower": 3
+        },
+        "description": "Gain {StrengthPower:diff()} Strength.",
+        "added_keywords": null,
+        "removed_keywords": null
+      },
+      "cost": 37,
+      "is_stocked": true,
+      "on_sale": true
+    },
+    {
+      "index": 5,
+      "name": "Panic Button",
+      "type": "Skill",
+      "rarity": "Uncommon",
+      "card_cost": 0,
+      "description": "Gain {Block:diff()} Block.\nYou cannot gain Block from cards for {Turns:diff()} {Turns:plural:turn|turns}.",
+      "stats": null,
+      "keywords": [
+        "Exhaust"
+      ],
+      "after_upgrade": {
+        "cost": 0,
+        "stats": {
+          "block": 40,
+          "turns": 2
+        },
+        "description": "Gain {Block:diff()} Block.\nYou cannot gain Block from cards for {Turns:diff()} {Turns:plural:turn|turns}.",
+        "added_keywords": null,
+        "removed_keywords": null
+      },
+      "cost": 88,
+      "is_stocked": true,
+      "on_sale": false
+    },
+    {
+      "index": 6,
+      "name": "Hidden Gem",
+      "type": "Skill",
+      "rarity": "Rare",
+      "card_cost": 1,
+      "description": "A random card in your Draw Pile gains Replay {Replay:diff()}.",
+      "stats": null,
+      "keywords": null,
+      "after_upgrade": {
+        "cost": 1,
+        "stats": {
+          "replay": 3
+        },
+        "description": "A random card in your Draw Pile gains Replay {Replay:diff()}.",
+        "added_keywords": null,
+        "removed_keywords": null
+      },
+      "cost": 180,
+      "is_stocked": true,
+      "on_sale": false
+    }
+  ],
+  "relics": [
+    {
+      "index": 0,
+      "name": "Bronze Scales",
+      "description": "Start each combat with {ThornsPower} Thorns.",
+      "cost": 221,
+      "is_stocked": true
+    },
+    {
+      "index": 1,
+      "name": "Centennial Puzzle",
+      "description": "The first time you lose HP each combat, draw {Cards} {Cards:plural:card|cards}.",
+      "cost": 194,
+      "is_stocked": true
+    },
+    {
+      "index": 2,
+      "name": "Belt Buckle",
+      "description": "While you have no potions, you have {DexterityPower} additional Dexterity.",
+      "cost": 227,
+      "is_stocked": true
+    }
+  ],
+  "potions": [
+    {
+      "index": 0,
+      "name": "Orobic Acid",
+      "description": "Add a random Attack, Skill, and Power into your Hand. They're free to play this turn.",
+      "cost": 100,
+      "is_stocked": true
+    },
+    {
+      "index": 1,
+      "name": "Energy Potion",
+      "description": "Gain {Energy:energyIcons()}.",
+      "cost": 50,
+      "is_stocked": true
+    },
+    {
+      "index": 2,
+      "name": "Gambler's Brew",
+      "description": "Discard any number of cards, then draw that many.",
+      "cost": 75,
+      "is_stocked": true
+    }
+  ],
+  "card_removal_cost": 75,
+  "player": {
+    "name": "The Ironclad",
+    "hp": 45,
+    "max_hp": 80,
+    "block": 0,
+    "gold": 13,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "description": "At the end of combat, heal {Heal} HP.",
+        "vars": {
+          "Heal": 6
+        }
+      },
+      {
+        "name": "Scroll Boxes",
+        "description": "Upon pickup, lose all Gold and choose 1 of 2 packs of cards to add to your Deck.",
+        "vars": null
+      },
+      {
+        "name": "Sword of Stone",
+        "description": "Transforms into a powerful Relic after defeating {Elites} {Elites:plural:Elite|Elites}.",
+        "vars": {
+          "Elites": 5
+        }
+      }
+    ],
+    "potions": [],
+    "deck_size": 14,
+    "deck": [
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.BASH",
+        "name": "Bash",
+        "cost": 2,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
+        "stats": {
+          "damage": 8,
+          "vulnerablepower": 2
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 2,
+          "stats": {
+            "damage": 10,
+            "vulnerablepower": 3
+          },
+          "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.ARMAMENTS",
+        "name": "Armaments",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.\nUpgrade {IfUpgraded:show:ALL cards|a card} in your Hand.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 5
+          },
+          "description": "Gain {Block:diff()} Block.\nUpgrade {IfUpgraded:show:ALL cards|a card} in your Hand.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.POMMEL_STRIKE",
+        "name": "Pommel Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+        "stats": {
+          "damage": 9,
+          "cards": 1
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 10,
+            "cards": 2
+          },
+          "description": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.SECOND_WIND",
+        "name": "Second Wind",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Exhaust all non-Attack cards in your Hand. Gain {Block:diff()} Block for each card Exhausted.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 7
+          },
+          "description": "Exhaust all non-Attack cards in your Hand. Gain {Block:diff()} Block for each card Exhausted.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.FEEL_NO_PAIN",
+        "name": "Feel No Pain",
+        "cost": 1,
+        "type": "Power",
+        "upgraded": false,
+        "description": "Whenever a card is Exhausted, gain {Power:diff()} Block.",
+        "stats": {
+          "power": 3
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "power": 4
+          },
+          "description": "Whenever a card is Exhausted, gain {Power:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      }
+    ]
+  }
 }
