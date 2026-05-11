@@ -221,6 +221,7 @@ def event_choice(state: dict):
 
 
 def map_select(state: dict):
+    print(state)
     choices = state.get("choices", [])
     choice = random.choice(choices)
     action = {

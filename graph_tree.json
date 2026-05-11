@@ -1,0 +1,399 @@
+{
+    "col": 3,
+    "row": 0,
+    "type": "Ancient",
+    "children": [
+        {
+            "col": 2,
+            "row": 1,
+            "type": "Monster",
+            "children": [
+                {
+                    "col": 1,
+                    "row": 2,
+                    "type": "Monster",
+                    "children": [
+                        {
+                            "col": 2,
+                            "row": 3,
+                            "type": "Monster",
+                            "children": [
+                                {
+                                    "col": 1,
+                                    "row": 4,
+                                    "type": "Unknown",
+                                    "children": [
+                                        {
+                                            "col": 0,
+                                            "row": 5,
+                                            "type": "RestSite",
+                                            "children": [
+                                                {
+                                                    "col": 0,
+                                                    "row": 6,
+                                                    "type": "Unknown",
+                                                    "children": [
+                                                        {
+                                                            "col": 0,
+                                                            "row": 7,
+                                                            "type": "Elite",
+                                                            "children": [
+                                                                {
+                                                                    "col": 1,
+                                                                    "row": 8,
+                                                                    "type": "RestSite",
+                                                                    "children": [
+                                                                        {
+                                                                            "col": 1,
+                                                                            "row": 9,
+                                                                            "type": "Treasure",
+                                                                            "children": [
+                                                                                {
+                                                                                    "col": 2,
+                                                                                    "row": 10,
+                                                                                    "type": "RestSite",
+                                                                                    "children": [
+                                                                                        {
+                                                                                            "col": 3,
+                                                                                            "row": 11,
+                                                                                            "type": "Unknown",
+                                                                                            "children": [
+                                                                                                {
+                                                                                                    "col": 3,
+                                                                                                    "row": 12,
+                                                                                                    "type": "Shop",
+                                                                                                    "children": [
+                                                                                                        {
+                                                                                                            "col": 4,
+                                                                                                            "row": 13,
+                                                                                                            "type": "Monster",
+                                                                                                            "children": [
+                                                                                                                {
+                                                                                                                    "col": 5,
+                                                                                                                    "row": 14,
+                                                                                                                    "type": "Elite",
+                                                                                                                    "children": [
+                                                                                                                        {
+                                                                                                                            "col": 5,
+                                                                                                                            "row": 15,
+                                                                                                                            "type": "RestSite",
+                                                                                                                            "children": [
+                                                                                                                                {
+                                                                                                                                    "col": 3,
+                                                                                                                                    "row": 16,
+                                                                                                                                    "type": "Boss",
+                                                                                                                                    "children": []
+                                                                                                                                }
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    ]
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "col": 3,
+                                                                                                                    "row": 14,
+                                                                                                                    "type": "Monster",
+                                                                                                                    "children": [
+                                                                                                                        {
+                                                                                                                            "col": 2,
+                                                                                                                            "row": 15,
+                                                                                                                            "type": "RestSite",
+                                                                                                                            "children": []
+                                                                                                                        }
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "col": 2,
+                                                                                                            "row": 13,
+                                                                                                            "type": "Monster",
+                                                                                                            "children": [
+                                                                                                                {
+                                                                                                                    "col": 2,
+                                                                                                                    "row": 14,
+                                                                                                                    "type": "Unknown",
+                                                                                                                    "children": []
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "col": 2,
+                                                                                            "row": 11,
+                                                                                            "type": "Monster",
+                                                                                            "children": []
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "col": 0,
+                                                                    "row": 8,
+                                                                    "type": "Monster",
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "col": 1,
+                                                    "row": 6,
+                                                    "type": "Monster",
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "col": 1,
+                            "row": 3,
+                            "type": "Shop",
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "col": 3,
+                    "row": 2,
+                    "type": "Monster",
+                    "children": [
+                        {
+                            "col": 3,
+                            "row": 3,
+                            "type": "Unknown",
+                            "children": [
+                                {
+                                    "col": 3,
+                                    "row": 4,
+                                    "type": "Monster",
+                                    "children": [
+                                        {
+                                            "col": 3,
+                                            "row": 5,
+                                            "type": "RestSite",
+                                            "children": [
+                                                {
+                                                    "col": 3,
+                                                    "row": 6,
+                                                    "type": "Monster",
+                                                    "children": [
+                                                        {
+                                                            "col": 4,
+                                                            "row": 7,
+                                                            "type": "RestSite",
+                                                            "children": [
+                                                                {
+                                                                    "col": 3,
+                                                                    "row": 8,
+                                                                    "type": "Monster",
+                                                                    "children": [
+                                                                        {
+                                                                            "col": 3,
+                                                                            "row": 9,
+                                                                            "type": "Treasure",
+                                                                            "children": [
+                                                                                {
+                                                                                    "col": 4,
+                                                                                    "row": 10,
+                                                                                    "type": "Elite",
+                                                                                    "children": [
+                                                                                        {
+                                                                                            "col": 4,
+                                                                                            "row": 11,
+                                                                                            "type": "Unknown",
+                                                                                            "children": [
+                                                                                                {
+                                                                                                    "col": 5,
+                                                                                                    "row": 12,
+                                                                                                    "type": "Elite",
+                                                                                                    "children": [
+                                                                                                        {
+                                                                                                            "col": 6,
+                                                                                                            "row": 13,
+                                                                                                            "type": "Unknown",
+                                                                                                            "children": [
+                                                                                                                {
+                                                                                                                    "col": 6,
+                                                                                                                    "row": 14,
+                                                                                                                    "type": "Monster",
+                                                                                                                    "children": []
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "col": 5,
+                                                                                            "row": 11,
+                                                                                            "type": "RestSite",
+                                                                                            "children": [
+                                                                                                {
+                                                                                                    "col": 6,
+                                                                                                    "row": 12,
+                                                                                                    "type": "Monster",
+                                                                                                    "children": []
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "col": 4,
+                                                                    "row": 8,
+                                                                    "type": "Elite",
+                                                                    "children": [
+                                                                        {
+                                                                            "col": 5,
+                                                                            "row": 9,
+                                                                            "type": "Treasure",
+                                                                            "children": []
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "col": 2,
+                                                            "row": 7,
+                                                            "type": "Unknown",
+                                                            "children": [
+                                                                {
+                                                                    "col": 2,
+                                                                    "row": 8,
+                                                                    "type": "Monster",
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "col": 4,
+                                    "row": 4,
+                                    "type": "Monster",
+                                    "children": [
+                                        {
+                                            "col": 4,
+                                            "row": 5,
+                                            "type": "Monster",
+                                            "children": [
+                                                {
+                                                    "col": 5,
+                                                    "row": 6,
+                                                    "type": "Monster",
+                                                    "children": [
+                                                        {
+                                                            "col": 6,
+                                                            "row": 7,
+                                                            "type": "RestSite",
+                                                            "children": [
+                                                                {
+                                                                    "col": 6,
+                                                                    "row": 8,
+                                                                    "type": "Unknown",
+                                                                    "children": [
+                                                                        {
+                                                                            "col": 6,
+                                                                            "row": 9,
+                                                                            "type": "Treasure",
+                                                                            "children": [
+                                                                                {
+                                                                                    "col": 6,
+                                                                                    "row": 10,
+                                                                                    "type": "Monster",
+                                                                                    "children": []
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "col": 5,
+            "row": 1,
+            "type": "Monster",
+            "children": [
+                {
+                    "col": 6,
+                    "row": 2,
+                    "type": "Monster",
+                    "children": [
+                        {
+                            "col": 6,
+                            "row": 3,
+                            "type": "Monster",
+                            "children": [
+                                {
+                                    "col": 6,
+                                    "row": 4,
+                                    "type": "Monster",
+                                    "children": [
+                                        {
+                                            "col": 6,
+                                            "row": 5,
+                                            "type": "Unknown",
+                                            "children": [
+                                                {
+                                                    "col": 6,
+                                                    "row": 6,
+                                                    "type": "Shop",
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "col": 5,
+                    "row": 2,
+                    "type": "Monster",
+                    "children": [
+                        {
+                            "col": 5,
+                            "row": 3,
+                            "type": "Monster",
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
