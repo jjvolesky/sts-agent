@@ -5,36 +5,58 @@ import random
 import subprocess
 from time import sleep
 
+import numpy as np
+
 from sts_agent.input_cleaner import clean_input
 from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
 
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
+TRAINING_LOG_PATH = "sts_agent/rl/training_log.txt"
 
-START_CMD = {
-    "cmd": "start_run",
-    "character": "Ironclad",
-    "seed": None,
-    "ascension": 0,
-}
+TRAINING_GAMES = 500
+TESTING_GAMES = 50
 
-TRAINING_GAMES = 1000
+TRAINING_SEED = ""
+TESTING_SEED = "cs540_test_seed_"
+
 random.seed(42)
 
-PREV_STATE = None # necessary for shop removal
+PREV_STATE = None  # necessary for shop removal
 
-def main(training: bool):
+
+def main(training: bool, rl: bool, pathing: bool):
     if training:
-        for i in range(TRAINING_GAMES):
-            START_CMD["seed"] = str(i)
-            game_process = start_game()
-            game_loop(game_process, training)
+        games = TRAINING_GAMES
+        base_seed = TRAINING_SEED
+
+        # overrides for when we are training
+        rl = True
+        pathing = False
     else:
-        START_CMD["seed"] = "cs540_test_seed"
-        game_process = start_game()
-        game_loop(game_process, training)
+        games = TESTING_GAMES
+        base_seed = TESTING_SEED
+
+    acts, floors, combats = [], [], []
+    for i in range(games):
+        seed = f"{base_seed}{i}"
+        game_process = start_game(seed)
+
+        act, floor, combat_count = game_loop(game_process, training, rl, pathing)
+        acts.append(act)
+        floors.append(floor)
+        combats.append(combat_count)
+
+    if not training:
+        acts = np.asarray(acts)
+        floors = np.asarray(floors)
+        combats = np.asarray(combats)
+
+        print(f"\nAct: {acts.mean():.2f} +/- {acts.std():.2f}")
+        print(f"Floor: {floors.mean():.2f} +/- {floors.std():.2f}")
+        print(f"Combats: {combats.mean():.2f} +/- {combats.std():.2f}")
 
 
-def start_game():
+def start_game(seed: str):
     game_process = subprocess.Popen(
         ["dotnet", "run", "--project", "src/Sts2Headless/Sts2Headless.csproj"],
         cwd=CLI_DIR,
@@ -46,20 +68,26 @@ def start_game():
         text=True,
         bufsize=1,
     )
+    sleep(0.5)
 
-    sleep(1)
+    print(f"Starting game with seed: {seed}")
+    start_command = {
+        "cmd": "start_run",
+        "character": "Ironclad",
+        "seed": seed,
+        "ascension": 0,
+    }
 
-    print(f"Starting game with seed: {START_CMD['seed']}")
-    game_process.stdin.write(json.dumps(START_CMD) + "\n")
+    game_process.stdin.write(json.dumps(start_command) + "\n")
     game_process.stdin.flush()
 
-    sleep(1)
-
+    sleep(0.5)
     return game_process
 
 
-def game_loop(game_process: subprocess.Popen[str], training: bool):
+def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pathing: bool):
     in_combat = False
+    combats = 0
 
     try:
         while game_process.poll() is None:
@@ -78,11 +106,11 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                 game_process.stdin.write(json.dumps(action) + "\n")
                 game_process.stdin.flush()
 
-                sleep(1)
+                sleep(0.5)
                 continue
 
-            if not "decision" in state:
-                sleep(1)
+            if "decision" not in state:
+                sleep(0.5)
                 continue
 
             decision = state["decision"]
@@ -90,7 +118,9 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
 
             if in_combat and decision != "combat_play" and decision != "card_select":
                 in_combat = False
-                on_combat_end(state, training)
+
+                if rl:
+                    on_combat_end(state, training)
 
             match decision:
                 case "bundle_select":
@@ -108,15 +138,25 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
 
                     if not in_combat and current_round == 1:
                         in_combat = True
-                        on_combat_enter(state)
+                        combats += 1
 
-                    action = combat_play_rl(state, training)
+                        if rl:
+                            on_combat_enter(state)
+
+                    if rl:
+                        action = combat_play_rl(state, training)
+                    else:
+                        action = combat_play(state)
                 case "event_choice":
                     action = event_choice(state)
                 case "game_over":
                     victory = state.get("victory", False)
                     player = state.get("player", {})
                     context = state.get("context", {})
+
+                    act = context["act"]
+                    floor = context["floor"]
+
                     print(
                         f"\n{'VICTORY' if victory else 'DEFEAT'} at act {context.get('act')}, "
                         f"floor {context.get('floor')} "
@@ -124,9 +164,17 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
                         f"Gold: {player.get('gold')}, "
                         f"Deck: {player.get('deck_size')} cards)\n"
                     )
-                    break
+
+                    if training:
+                        with open(TRAINING_LOG_PATH, "a") as f:
+                            f.write(f"{act},{floor},{combats}\n")
+
+                    return act, floor, combats
                 case "map_select":
-                    action = map_select(state)
+                    if pathing:
+                        raise NotImplementedError("Pathing logic not implemented yet")
+                    else:
+                        action = map_select(state)
                 case "rest_site":
                     action = rest_site(state)
                 case "shop":
@@ -138,7 +186,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool):
             game_process.stdin.write(json.dumps(action) + "\n")
             game_process.stdin.flush()
 
-            sleep(1)
+            sleep(0.5)
     finally:
         game_process.kill()
 
@@ -242,7 +290,7 @@ def shop_select(state: dict):
     gold = state["player"]["gold"]
     relics = state.get("relics", [])
     action = None
-    if gold >= state["card_removal_cost"] and has_strike(state):
+    if gold >= state["card_removal_cost"] and has_strike(state["player"]):
         global PREV_STATE
         PREV_STATE = state
         action = {
@@ -261,10 +309,12 @@ def shop_select(state: dict):
                 }
     return action if action else {"cmd": "action", "action": "leave_room"}
 
+
 def has_strike(player_state: dict):
     for card in player_state["deck"]:
         if card["name"] == "Strike": return True
     return False
+
 
 def index_of_strike(cards):
     for card in cards:
@@ -290,9 +340,14 @@ def rest_site(state: dict):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+
     parser.add_argument("--training", action="store_true")
+    parser.add_argument("--rl", action="store_true")
+    parser.add_argument("--pathing", action="store_true")
+
     args = parser.parse_args()
-    main(args.training)
+
+    main(args.training, args.rl, args.pathing)
 
     # with open("example-json/example-shop.json", 'r') as f:
     #     shop_state = json.load(f)

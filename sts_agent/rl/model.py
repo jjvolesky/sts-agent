@@ -14,7 +14,7 @@ DEVICE = (
 CHECKPOINT_PATH = "sts_agent/rl/model_checkpoint.pt"
 LOSS_PATH = "sts_agent/rl/loss_log.txt"
 
-STATE_DIM = 55
+STATE_DIM = 66
 ACTION_DIM = 11
 
 GAMMA = 0.9
@@ -23,7 +23,7 @@ HAND_SIZE = 10
 
 
 class RLModel(nn.Module):
-    def __init__(self, hidden_dim: int = 64):
+    def __init__(self, hidden_dim: int = 128):
         super().__init__()
 
         self.net = nn.Sequential(
@@ -31,16 +31,20 @@ class RLModel(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, ACTION_DIM),
         )
 
+        self.policy_head = nn.Linear(hidden_dim, ACTION_DIM)
+
+        self.value_head = nn.Linear(hidden_dim, 1)
+
     def forward(self, state: torch.Tensor):
-        return self.net(state)
+        out = self.net(state)
+        return self.policy_head(out), self.value_head(out).squeeze(-1)
 
     # https://docs.pytorch.org/docs/2.11/distributions.html
 
     def select_action_training(self, state: torch.Tensor, valid_actions: torch.Tensor):
-        logits = self.forward(state)
+        logits, value = self.forward(state)
         masked_logits = (
             logits.clone()
         )  # don't want to mess with the computation graph in training
@@ -52,11 +56,11 @@ class RLModel(nn.Module):
         action = dist.sample()
         log_prob = dist.log_prob(action)
 
-        return action, log_prob
+        return action, log_prob, value
 
     def select_action(self, state: torch.Tensor, valid_actions: torch.Tensor):
         with torch.no_grad():
-            logits = self.forward(state)
+            logits, _ = self.forward(state)
             logits[~valid_actions] = float("-inf")
 
             probs = F.softmax(logits, dim=-1)
@@ -71,14 +75,18 @@ optimizer = None
 
 episode_log_probs = []
 episode_rewards = []
+episode_values = []
+
 last_hp = -1
+last_enemy_hp = 0
 
 
 def on_combat_enter(state: dict):
-    global model, optimizer, last_hp
+    global model, optimizer, last_hp, last_enemy_hp
 
     model = RLModel().to(DEVICE)
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    # Karpathy constant lol
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
 
     path = Path(CHECKPOINT_PATH)
     if path.exists():
@@ -90,6 +98,7 @@ def on_combat_enter(state: dict):
         print(f"No checkpoint at {path}. Starting fresh.")
 
     last_hp = state["player"]["hp"]
+    last_enemy_hp = sum(enemy.get("hp", 0) for enemy in state.get("enemies", []))
 
 
 def build_valid_actions(state: dict) -> torch.Tensor:
@@ -108,31 +117,34 @@ def build_valid_actions(state: dict) -> torch.Tensor:
 
 
 def record_reward(state: dict):
+    global last_hp, last_enemy_hp
+
+    hp = state["player"]["hp"]
+    max_hp = state["player"]["max_hp"]
+    block = state["player"]["block"]
+
+    enemy_hp = 0
+    incoming_damage = 0
+    for enemy in state.get("enemies", []):
+        enemy_hp += enemy.get("hp", 0)
+        incoming_damage += enemy.get("intent", {}).get("damage", 0)
+
+    damage_reward = (last_enemy_hp - enemy_hp) / max_hp
+    block_reward = min(block, incoming_damage) / max(incoming_damage, 1)
+    hp_penalty = (hp - last_hp) / max_hp
+
     decision = state.get("decision", "")
+    if decision != "combat_play" and decision != "game_over":
+        # this means combat ended and we survived
+        end_of_combat_bonus = 5 * (hp / max_hp)
+    else:
+        end_of_combat_bonus = 0
 
-    """
-    My thought process here (very simple starting, we can expand):
-    - Winning or losing is the same as winning the last combat
-    - Winning a combat is the best reward and losing is the worst
-    - Taking damage is not great but not nearly as bad as losing
-    """
-
-    match decision:
-        case "game_over":
-            victory = state.get("victory", False)
-            reward = 1.0 if victory else -1.0
-        case "combat_play":
-            hp = state["player"]["hp"]
-            global last_hp
-            if hp < last_hp:
-                reward = -0.1
-            else:
-                reward = 0.1
-            last_hp = hp
-        case _:
-            reward = 1.0
-
+    reward = damage_reward + block_reward + end_of_combat_bonus + hp_penalty
     episode_rewards.append(reward)
+
+    last_hp = hp
+    last_enemy_hp = enemy_hp
 
 
 def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
@@ -143,6 +155,7 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
 
     hp = state["player"]["hp"]
     max_hp = state["player"]["max_hp"]
+    block = state["player"]["block"]
 
     energy = state.get("energy", 0)
     max_energy = state.get("max_energy", 0)
@@ -152,6 +165,7 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
     hand = state.get("hand", [])
 
     playable = [0.0] * HAND_SIZE
+    costs = [0.0] * HAND_SIZE
     skills = [0.0] * HAND_SIZE
     attacks = [0.0] * HAND_SIZE
     block_percents = [0.0] * HAND_SIZE
@@ -164,15 +178,18 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
             else 0.0
         )
 
+        costs[i] = card.get("cost", 0) / max_energy if max_energy else 0.0
+
         card_type = card.get("type", "")
+        stats = card.get("stats") or {}
 
         if card_type == "Skill":
             skills[i] = 1.0
-            block_percents[i] = card["stats"].get("block", 0.0) / max_hp
+            block_percents[i] = stats.get("block", 0.0) / max_hp
 
         if card_type == "Attack":
             attacks[i] = 1.0
-            damage_percents[i] = card["stats"].get("damage", 0.0) / max_hp
+            damage_percents[i] = stats.get("damage", 0.0) / max_hp
 
     # enemy info
 
@@ -181,23 +198,32 @@ def build_state_tensor(state: dict, training: bool) -> torch.Tensor:
     enemy_count = len(enemies)
 
     enemy_hp_ratios = []
+    incoming_damage = 0
+    attacking_count = 0
+
     for enemy in enemies:
         enemy_hp = enemy.get("hp", 0)
         enemy_max_hp = enemy.get("max_hp", 1)
         enemy_hp_ratios.append(enemy_hp / enemy_max_hp if enemy_max_hp else 0.0)
+
+        intent = enemy.get("intent", {})
+        attacking_count += 1 if intent.get("type") == "Attack" else 0
+        incoming_damage += intent.get("damage", 0)
+
     enemy_hp_avg = sum(enemy_hp_ratios) / enemy_count if enemy_count else 0.0
 
-    incoming_damage = sum(e.get("intent", {}).get("damage", 0) for e in enemies)
+    # bring together all features
 
     state_features = torch.tensor(
-        [hp / max_hp, energy / max_energy if max_energy else 0.0]
+        [hp / max_hp, block / max_hp, energy / max_energy if max_energy else 0.0]
         + playable
+        + costs
         + skills
         + attacks
         + block_percents
         + damage_percents
         + [
-            enemy_count,
+            attacking_count / enemy_count if enemy_count else 0.0,
             enemy_hp_avg,
             incoming_damage / max_hp,
         ],
@@ -216,8 +242,11 @@ def run_inference(state: dict, training: bool) -> str:
 
     if training:
         model.train()
-        action, log_prob = model.select_action_training(state_tensor, valid_actions)
+        action, log_prob, value = model.select_action_training(
+            state_tensor, valid_actions
+        )
         episode_log_probs.append(log_prob)
+        episode_values.append(value)
     else:
         model.eval()
         action = model.select_action(state_tensor, valid_actions)
@@ -226,7 +255,7 @@ def run_inference(state: dict, training: bool) -> str:
 
 
 def on_combat_end(state: dict, training: bool):
-    global episode_log_probs, episode_rewards, last_hp
+    global episode_log_probs, episode_rewards, episode_values, last_hp, last_enemy_hp
 
     if training:
         _ = build_state_tensor(state, training)
@@ -242,21 +271,26 @@ def on_combat_end(state: dict, training: bool):
         for reward in reversed(episode_rewards):
             G = reward + GAMMA * G
             returns.insert(0, G)
-
         returns = torch.tensor(returns, dtype=torch.float32, device=DEVICE)
 
-        if len(returns) > 1:
-            returns = (returns - returns.mean()) / (returns.std() + 1e-8)
+        values = torch.stack(episode_values)
+
+        advantages = returns - values.detach()
+        if len(advantages) > 1:
+            advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
 
         log_probs = torch.stack(episode_log_probs)
-        loss = -(log_probs * returns).mean()
 
-        with open(LOSS_PATH, "a") as f:
-            f.write(f"{loss.item()}\n")
+        policy_loss = -(log_probs * advantages).mean()
+        value_loss = F.mse_loss(values, returns)
+        loss = policy_loss + 0.5 * value_loss
 
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
+        with open(LOSS_PATH, "a") as f:
+            f.write(f"{policy_loss.item()},{value_loss.item()}\n")
 
         print(f"Training step done. Loss: {loss.item():.4f}")
 
@@ -272,7 +306,10 @@ def on_combat_end(state: dict, training: bool):
 
         episode_log_probs = []
         episode_rewards = []
+        episode_values = []
+
         last_hp = -1
+        last_enemy_hp = 0
 
 
 if __name__ == "__main__":
