@@ -9,6 +9,7 @@ import numpy as np
 
 from sts_agent.input_cleaner import clean_input
 from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
+from sts_agent.pathing import get_best_path
 
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 TRAINING_LOG_PATH = "sts_agent/rl/training_log.txt"
@@ -98,6 +99,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
             print(f"{state_type=}")
 
             if state_type == "error":
+                print(state)
                 if random.random() < 0.5:
                     action = {"cmd": "action", "action": "proceed"}
                 else:
@@ -172,12 +174,13 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
                     return act, floor, combats
                 case "map_select":
                     if pathing:
-                        raise NotImplementedError("Pathing logic not implemented yet")
+                        action = smart_map_select(state)
                     else:
                         action = map_select(state)
                 case "rest_site":
                     action = rest_site(state)
                 case "shop":
+                    print(state)
                     action = shop_select(state)
                 case _:
                     action = {"cmd": "action", "action": "proceed"}
@@ -286,6 +289,16 @@ def map_select(state: dict):
     return action
 
 
+def smart_map_select(state: dict):
+    choice = get_best_path(state)[0]
+    action = {
+        'cmd': 'action',
+        'action': 'select_map_node',
+        'args': {'col': choice['col'], 'row': choice['row']}
+    }
+    return action
+
+
 def shop_select(state: dict):
     gold = state["player"]["gold"]
     relics = state.get("relics", [])
@@ -298,14 +311,14 @@ def shop_select(state: dict):
             "action": "remove_card"
         }
     if relics: # try to buy relics if have enough gold
-        relic_tuples = [(relic["cost"], relic["index"]) for relic in relics]
+        relic_tuples = [(relic["cost"], relic["index"]) for relic in relics if relic['is_stocked']]
         relic_tuples.sort(key=lambda x: x[0])
         for relic in relic_tuples:
             if gold >= relic[0]:
                 action = {
                     "cmd": "action",
-                    "action": "do_buy_relic",
-                    "args": {"relic_index": relic[1]}
+                    "action": "buy_relic",
+                    "args": {"relic_index": int(relic[1])}
                 }
     return action if action else {"cmd": "action", "action": "leave_room"}
 
