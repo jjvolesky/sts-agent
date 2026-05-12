@@ -13,8 +13,8 @@ from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 TRAINING_LOG_PATH = "sts_agent/rl/training_log.txt"
 
-TRAINING_GAMES = 250
-TESTING_GAMES = 30
+TRAINING_GAMES = 500
+TESTING_GAMES = 50
 
 TRAINING_SEED = ""
 TESTING_SEED = "cs540_test_seed_"
