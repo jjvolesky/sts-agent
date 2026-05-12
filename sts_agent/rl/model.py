@@ -28,11 +28,9 @@ class RLModel(nn.Module):
 
         self.net = nn.Sequential(
             nn.Linear(STATE_DIM, hidden_dim),
-            nn.LayerNorm(hidden_dim),
-            nn.Tanh(),
+            nn.ReLU(),
             nn.Linear(hidden_dim, hidden_dim),
-            nn.LayerNorm(hidden_dim),
-            nn.Tanh(),
+            nn.ReLU(),
         )
 
         self.policy_head = nn.Linear(hidden_dim, ACTION_DIM)
