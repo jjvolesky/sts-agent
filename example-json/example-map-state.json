@@ -1,0 +1,784 @@
+{
+  "type": "decision",
+  "decision": "map_select",
+  "context": {
+    "act": 1,
+    "act_name": "Overgrowth",
+    "floor": 1,
+    "room_type": "Map",
+    "boss": {
+      "id": "VANTOM_BOSS",
+      "name": "Vantom"
+    }
+  },
+  "choices": [
+    {
+      "col": 0,
+      "row": 1,
+      "type": "Monster"
+    },
+    {
+      "col": 3,
+      "row": 1,
+      "type": "Monster"
+    },
+    {
+      "col": 5,
+      "row": 1,
+      "type": "Monster"
+    }
+  ],
+  "player": {
+    "name": "The Ironclad",
+    "hp": 80,
+    "max_hp": 80,
+    "block": 0,
+    "gold": 0,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "description": "At the end of combat, heal {Heal} HP.",
+        "vars": {
+          "Heal": 6
+        }
+      },
+      {
+        "name": "Scroll Boxes",
+        "description": "Upon pickup, lose all Gold and choose 1 of 2 packs of cards to add to your Deck.",
+        "vars": null
+      }
+    ],
+    "potions": [],
+    "deck_size": 13,
+    "deck": [
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.STRIKE_IRONCLAD",
+        "name": "Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.",
+        "stats": {
+          "damage": 6
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 9
+          },
+          "description": "Deal {Damage:diff()} damage.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.DEFEND_IRONCLAD",
+        "name": "Defend",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 8
+          },
+          "description": "Gain {Block:diff()} Block.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.BASH",
+        "name": "Bash",
+        "cost": 2,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
+        "stats": {
+          "damage": 8,
+          "vulnerablepower": 2
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 2,
+          "stats": {
+            "damage": 10,
+            "vulnerablepower": 3
+          },
+          "description": "Deal {Damage:diff()} damage.\nApply {VulnerablePower:diff()} Vulnerable.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.ARMAMENTS",
+        "name": "Armaments",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Gain {Block:diff()} Block.\nUpgrade {IfUpgraded:show:ALL cards|a card} in your Hand.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 5
+          },
+          "description": "Gain {Block:diff()} Block.\nUpgrade {IfUpgraded:show:ALL cards|a card} in your Hand.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.POMMEL_STRIKE",
+        "name": "Pommel Strike",
+        "cost": 1,
+        "type": "Attack",
+        "upgraded": false,
+        "description": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+        "stats": {
+          "damage": 9,
+          "cards": 1
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "damage": 10,
+            "cards": 2
+          },
+          "description": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      },
+      {
+        "id": "CARD.SECOND_WIND",
+        "name": "Second Wind",
+        "cost": 1,
+        "type": "Skill",
+        "upgraded": false,
+        "description": "Exhaust all non-Attack cards in your Hand. Gain {Block:diff()} Block for each card Exhausted.",
+        "stats": {
+          "block": 5
+        },
+        "keywords": null,
+        "after_upgrade": {
+          "cost": 1,
+          "stats": {
+            "block": 7
+          },
+          "description": "Exhaust all non-Attack cards in your Hand. Gain {Block:diff()} Block for each card Exhausted.",
+          "added_keywords": null,
+          "removed_keywords": null
+        }
+      }
+    ]
+  },
+  "act": 1,
+  "act_name": "Overgrowth",
+  "floor": 1,
+  "full_map": {
+    "col": 3,
+    "row": 0,
+    "type": "Ancient",
+    "children": [
+      {
+        "col": 0,
+        "row": 1,
+        "type": "Monster",
+        "children": [
+          {
+            "col": 0,
+            "row": 2,
+            "type": "Unknown",
+            "children": [
+              {
+                "col": 1,
+                "row": 3,
+                "type": "Shop",
+                "children": [
+                  {
+                    "col": 0,
+                    "row": 4,
+                    "type": "Monster",
+                    "children": [
+                      {
+                        "col": 0,
+                        "row": 5,
+                        "type": "Unknown",
+                        "children": [
+                          {
+                            "col": 1,
+                            "row": 6,
+                            "type": "Unknown",
+                            "children": [
+                              {
+                                "col": 0,
+                                "row": 7,
+                                "type": "Elite",
+                                "children": [
+                                  {
+                                    "col": 0,
+                                    "row": 8,
+                                    "type": "RestSite",
+                                    "children": [
+                                      {
+                                        "col": 0,
+                                        "row": 9,
+                                        "type": "Treasure",
+                                        "children": [
+                                          {
+                                            "col": 0,
+                                            "row": 10,
+                                            "type": "Monster",
+                                            "children": [
+                                              {
+                                                "col": 0,
+                                                "row": 11,
+                                                "type": "Unknown",
+                                                "children": [
+                                                  {
+                                                    "col": 0,
+                                                    "row": 12,
+                                                    "type": "Elite",
+                                                    "children": [
+                                                      {
+                                                        "col": 1,
+                                                        "row": 13,
+                                                        "type": "Shop",
+                                                        "children": [
+                                                          {
+                                                            "col": 0,
+                                                            "row": 14,
+                                                            "type": "Monster",
+                                                            "children": [
+                                                              {
+                                                                "col": 0,
+                                                                "row": 15,
+                                                                "type": "RestSite",
+                                                                "children": [
+                                                                  {
+                                                                    "col": 3,
+                                                                    "row": 16,
+                                                                    "type": "Boss",
+                                                                    "children": []
+                                                                  }
+                                                                ]
+                                                              }
+                                                            ]
+                                                          },
+                                                          {
+                                                            "col": 2,
+                                                            "row": 14,
+                                                            "type": "Elite",
+                                                            "children": [
+                                                              {
+                                                                "col": 2,
+                                                                "row": 15,
+                                                                "type": "RestSite",
+                                                                "children": []
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "col": 2,
+                                "row": 7,
+                                "type": "Unknown",
+                                "children": [
+                                  {
+                                    "col": 3,
+                                    "row": 8,
+                                    "type": "RestSite",
+                                    "children": [
+                                      {
+                                        "col": 2,
+                                        "row": 9,
+                                        "type": "Treasure",
+                                        "children": [
+                                          {
+                                            "col": 2,
+                                            "row": 10,
+                                            "type": "Unknown",
+                                            "children": [
+                                              {
+                                                "col": 3,
+                                                "row": 11,
+                                                "type": "Elite",
+                                                "children": [
+                                                  {
+                                                    "col": 2,
+                                                    "row": 12,
+                                                    "type": "Monster",
+                                                    "children": []
+                                                  },
+                                                  {
+                                                    "col": 3,
+                                                    "row": 12,
+                                                    "type": "RestSite",
+                                                    "children": [
+                                                      {
+                                                        "col": 3,
+                                                        "row": 13,
+                                                        "type": "Monster",
+                                                        "children": [
+                                                          {
+                                                            "col": 4,
+                                                            "row": 14,
+                                                            "type": "Unknown",
+                                                            "children": [
+                                                              {
+                                                                "col": 4,
+                                                                "row": 15,
+                                                                "type": "RestSite",
+                                                                "children": []
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "col": 2,
+                                                "row": 11,
+                                                "type": "Unknown",
+                                                "children": [
+                                                  {
+                                                    "col": 1,
+                                                    "row": 12,
+                                                    "type": "Monster",
+                                                    "children": []
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "col": 3,
+                                        "row": 9,
+                                        "type": "Treasure",
+                                        "children": [
+                                          {
+                                            "col": 4,
+                                            "row": 10,
+                                            "type": "RestSite",
+                                            "children": [
+                                              {
+                                                "col": 4,
+                                                "row": 11,
+                                                "type": "Unknown",
+                                                "children": [
+                                                  {
+                                                    "col": 5,
+                                                    "row": 12,
+                                                    "type": "Monster",
+                                                    "children": [
+                                                      {
+                                                        "col": 5,
+                                                        "row": 13,
+                                                        "type": "Monster",
+                                                        "children": [
+                                                          {
+                                                            "col": 5,
+                                                            "row": 14,
+                                                            "type": "Shop",
+                                                            "children": [
+                                                              {
+                                                                "col": 6,
+                                                                "row": 15,
+                                                                "type": "RestSite",
+                                                                "children": []
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "col": 6,
+                                                        "row": 13,
+                                                        "type": "Monster",
+                                                        "children": [
+                                                          {
+                                                            "col": 6,
+                                                            "row": 14,
+                                                            "type": "Monster",
+                                                            "children": []
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "col": 4,
+                                        "row": 9,
+                                        "type": "Treasure",
+                                        "children": [
+                                          {
+                                            "col": 5,
+                                            "row": 10,
+                                            "type": "Elite",
+                                            "children": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "col": 0,
+                "row": 3,
+                "type": "Monster",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "col": 3,
+        "row": 1,
+        "type": "Monster",
+        "children": [
+          {
+            "col": 3,
+            "row": 2,
+            "type": "Monster",
+            "children": [
+              {
+                "col": 2,
+                "row": 3,
+                "type": "Monster",
+                "children": [
+                  {
+                    "col": 3,
+                    "row": 4,
+                    "type": "Monster",
+                    "children": [
+                      {
+                        "col": 3,
+                        "row": 5,
+                        "type": "Monster",
+                        "children": [
+                          {
+                            "col": 3,
+                            "row": 6,
+                            "type": "RestSite",
+                            "children": [
+                              {
+                                "col": 3,
+                                "row": 7,
+                                "type": "Monster",
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "col": 2,
+                        "row": 5,
+                        "type": "Monster",
+                        "children": [
+                          {
+                            "col": 2,
+                            "row": 6,
+                            "type": "Unknown",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "col": 1,
+                    "row": 4,
+                    "type": "Unknown",
+                    "children": [
+                      {
+                        "col": 1,
+                        "row": 5,
+                        "type": "Monster",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "col": 5,
+        "row": 1,
+        "type": "Monster",
+        "children": [
+          {
+            "col": 6,
+            "row": 2,
+            "type": "Unknown",
+            "children": [
+              {
+                "col": 6,
+                "row": 3,
+                "type": "Monster",
+                "children": [
+                  {
+                    "col": 6,
+                    "row": 4,
+                    "type": "Monster",
+                    "children": [
+                      {
+                        "col": 5,
+                        "row": 5,
+                        "type": "Monster",
+                        "children": [
+                          {
+                            "col": 5,
+                            "row": 6,
+                            "type": "Monster",
+                            "children": [
+                              {
+                                "col": 4,
+                                "row": 7,
+                                "type": "Monster",
+                                "children": []
+                              },
+                              {
+                                "col": 6,
+                                "row": 7,
+                                "type": "Unknown",
+                                "children": [
+                                  {
+                                    "col": 6,
+                                    "row": 8,
+                                    "type": "RestSite",
+                                    "children": [
+                                      {
+                                        "col": 6,
+                                        "row": 9,
+                                        "type": "Treasure",
+                                        "children": [
+                                          {
+                                            "col": 6,
+                                            "row": 10,
+                                            "type": "Unknown",
+                                            "children": [
+                                              {
+                                                "col": 6,
+                                                "row": 11,
+                                                "type": "Monster",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

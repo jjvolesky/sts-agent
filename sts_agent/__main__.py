@@ -7,6 +7,7 @@ from time import sleep
 
 from sts_agent.input_cleaner import clean_input
 from sts_agent.rl.model import on_combat_enter, on_combat_end, run_inference
+from sts_agent.pathing import get_best_path
 
 CLI_DIR = os.path.join(os.path.dirname(__file__), "../sts2-cli")
 
@@ -228,7 +229,6 @@ def event_choice(state: dict):
 
 
 def map_select(state: dict):
-    print(state)
     choices = state.get("choices", [])
     choice = random.choice(choices)
     action = {
@@ -239,11 +239,21 @@ def map_select(state: dict):
     return action
 
 
+def smart_map_select(state: dict):
+    choice = get_best_path(state)[0]
+    action = {
+        'cmd': 'action',
+        'action': 'select_map_node',
+        'args': {'col': choice['col'], 'row': choice['row']}
+    }
+    return action
+
+
 def shop_select(state: dict):
     gold = state["player"]["gold"]
     relics = state.get("relics", [])
     action = None
-    if gold >= state["card_removal_cost"] and has_strike(state):
+    if gold >= state["card_removal_cost"] and has_strike(state['player']):
         global PREV_STATE
         PREV_STATE = state
         action = {
