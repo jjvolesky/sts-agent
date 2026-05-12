@@ -99,6 +99,7 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
             print(f"{state_type=}")
 
             if state_type == "error":
+                print(state)
                 if random.random() < 0.5:
                     action = {"cmd": "action", "action": "proceed"}
                 else:
@@ -173,12 +174,13 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
                     return act, floor, combats
                 case "map_select":
                     if pathing:
-                        raise NotImplementedError("Pathing logic not implemented yet")
+                        action = smart_map_select(state)
                     else:
                         action = map_select(state)
                 case "rest_site":
                     action = rest_site(state)
                 case "shop":
+                    print(state)
                     action = shop_select(state)
                 case _:
                     action = {"cmd": "action", "action": "proceed"}
@@ -309,14 +311,14 @@ def shop_select(state: dict):
             "action": "remove_card"
         }
     if relics: # try to buy relics if have enough gold
-        relic_tuples = [(relic["cost"], relic["index"]) for relic in relics]
+        relic_tuples = [(relic["cost"], relic["index"]) for relic in relics if relic['is_stocked']]
         relic_tuples.sort(key=lambda x: x[0])
         for relic in relic_tuples:
             if gold >= relic[0]:
                 action = {
                     "cmd": "action",
-                    "action": "do_buy_relic",
-                    "args": {"relic_index": relic[1]}
+                    "action": "buy_relic",
+                    "args": {"relic_index": int(relic[1])}
                 }
     return action if action else {"cmd": "action", "action": "leave_room"}
 
