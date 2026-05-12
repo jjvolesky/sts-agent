@@ -99,7 +99,6 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
             print(f"{state_type=}")
 
             if state_type == "error":
-                print(state)
                 if random.random() < 0.5:
                     action = {"cmd": "action", "action": "proceed"}
                 else:
@@ -180,7 +179,6 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
                 case "rest_site":
                     action = rest_site(state)
                 case "shop":
-                    print(state)
                     action = shop_select(state)
                 case _:
                     action = {"cmd": "action", "action": "proceed"}
