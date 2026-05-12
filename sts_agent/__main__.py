@@ -52,11 +52,11 @@ def main(training: bool, rl: bool, pathing: bool):
         floors = np.asarray(floors)
         combats = np.asarray(combats)
 
-        print(f"\nAct: {acts.mean():.2f} +/- {acts.std():.2f}")
+        print(f"\nAct: {np.median(acts):.2f}, {acts.mean():.2f} +/- {acts.std():.2f}")
         print(f"Highest Act: {max(acts)}")
-        print(f"Floor: {floors.mean():.2f} +/- {floors.std():.2f}")
+        print(f"Floor: {np.median(floors):.2f}, {floors.mean():.2f} +/- {floors.std():.2f}")
         print(f"Highest Floor: {max(floors)}")
-        print(f"Combats: {combats.mean():.2f} +/- {combats.std():.2f}")
+        print(f"Combats: {np.median(combats):.2f}, {combats.mean():.2f} +/- {combats.std():.2f}")
 
 
 def start_game(seed: str):
