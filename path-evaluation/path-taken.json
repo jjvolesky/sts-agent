@@ -1,0 +1,82 @@
+[
+    {
+        "col": 4,
+        "row": 1,
+        "type": "Monster"
+    },
+    {
+        "col": 4,
+        "row": 2,
+        "type": "Monster"
+    },
+    {
+        "col": 5,
+        "row": 3,
+        "type": "Unknown"
+    },
+    {
+        "col": 5,
+        "row": 4,
+        "type": "Monster"
+    },
+    {
+        "col": 6,
+        "row": 5,
+        "type": "Unknown"
+    },
+    {
+        "col": 6,
+        "row": 6,
+        "type": "Unknown"
+    },
+    {
+        "col": 6,
+        "row": 7,
+        "type": "RestSite"
+    },
+    {
+        "col": 6,
+        "row": 8,
+        "type": "Unknown"
+    },
+    {
+        "col": 6,
+        "row": 9,
+        "type": "Treasure"
+    },
+    {
+        "col": 6,
+        "row": 10,
+        "type": "RestSite"
+    },
+    {
+        "col": 5,
+        "row": 11,
+        "type": "Shop"
+    },
+    {
+        "col": 6,
+        "row": 12,
+        "type": "Unknown"
+    },
+    {
+        "col": 6,
+        "row": 13,
+        "type": "Monster"
+    },
+    {
+        "col": 6,
+        "row": 14,
+        "type": "Monster"
+    },
+    {
+        "col": 5,
+        "row": 15,
+        "type": "RestSite"
+    },
+    {
+        "col": 3,
+        "row": 16,
+        "type": "Boss"
+    }
+]

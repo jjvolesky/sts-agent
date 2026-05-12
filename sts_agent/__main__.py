@@ -87,6 +87,9 @@ def start_game(seed: str):
     sleep(0.5)
     return game_process
 
+ORIGINAL_PATH = []
+PATH_TAKEN = []
+PRINTED_MAP = False
 
 def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pathing: bool):
     in_combat = False
@@ -124,6 +127,11 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
 
                 if rl:
                     on_combat_end(state, training)
+
+            ## FOR PATH EVLAUTION
+            global ORIGINAL_PATH, PATH_TAKEN, PRINTED_MAP
+            ##
+
 
             match decision:
                 case "bundle_select":
@@ -168,12 +176,25 @@ def game_loop(game_process: subprocess.Popen[str], training: bool, rl: bool, pat
                         f"Deck: {player.get('deck_size')} cards)\n"
                     )
 
+                    ## FOR PATH EVALUATION
+                    print(f"ORIGINAL PATH: {ORIGINAL_PATH}")
+                    print(f"PATH TAKEN: {PATH_TAKEN}")
+                    PRINTED_MAP = False
+                    ORIGINAL_PATH = []
+                    PATH_TAKEN = []
+                    ##
+
                     if training:
                         with open(TRAINING_LOG_PATH, "a") as f:
                             f.write(f"{act},{floor},{combats}\n")
 
                     return act, floor, combats
                 case "map_select":
+                    ## FOR PATH EVALUATION
+                    if not PRINTED_MAP:
+                        print(state['full_map'])
+                        PRINTED_MAP = True
+                    ##
                     if pathing:
                         action = smart_map_select(state)
                     else:
@@ -290,7 +311,15 @@ def map_select(state: dict):
 
 
 def smart_map_select(state: dict):
+    ## FOR PATH EVALUATION
+    global ORIGINAL_PATH, PATH_TAKEN
+    if len(ORIGINAL_PATH) == 0:
+        ORIGINAL_PATH = get_best_path(state)
+    ##
     choice = get_best_path(state)[0]
+    ## FOR PATH EVALUATION
+    PATH_TAKEN.append(choice)
+    ##
     action = {
         'cmd': 'action',
         'action': 'select_map_node',
