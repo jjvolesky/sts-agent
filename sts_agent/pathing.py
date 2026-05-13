@@ -71,7 +71,7 @@ def calculate_node_value(node: dict, player_state: dict, path: list):
         case "Ancient":
             return 0
         case "Unknown":
-            return float(np.mean([combat_value(node), shop_value(player_state, path), 0])) # 0 is for treasure
+            return float(np.mean([combat_value(node), shop_value(player_state, path), 47.5 + w_cr])) # the last item is the value of a treasure room
         case _:
             raise ValueError(f"Unknown room type in calculate_node_value: {node['type']}")
 
